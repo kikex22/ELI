@@ -1,12 +1,12 @@
 :root {
   color-scheme: light;
-  --bg: #f5f5f3;
-  --surface-1: #fcfcfb;
+  --bg: #e6edf7;
+  --surface-1: #f9fbfe;
   --text-primary: #0b0b0b;
   --text-secondary: #52514e;
   --text-muted: #77766f;
-  --grid: #e6e5e1;
-  --border: #deddd8;
+  --grid: #e1e7f0;
+  --border: #cfd9e8;
   --accent: #2a78d6;
   --series-1: #2a78d6;
   --series-2: #eb6834;
@@ -16,13 +16,13 @@
 @media (prefers-color-scheme: dark) {
   :root:where(:not([data-theme="light"])) {
     color-scheme: dark;
-    --bg: #121211;
-    --surface-1: #1a1a19;
+    --bg: #0c1522;
+    --surface-1: #142030;
     --text-primary: #ffffff;
     --text-secondary: #c3c2b7;
     --text-muted: #8d8c84;
-    --grid: #2c2c2a;
-    --border: #34332f;
+    --grid: #243246;
+    --border: #2c3b52;
     --accent: #3987e5;
     --series-1: #3987e5;
     --series-2: #d95926;
@@ -32,13 +32,13 @@
 }
 :root[data-theme="dark"] {
   color-scheme: dark;
-  --bg: #121211;
-  --surface-1: #1a1a19;
+  --bg: #0c1522;
+  --surface-1: #142030;
   --text-primary: #ffffff;
   --text-secondary: #c3c2b7;
   --text-muted: #8d8c84;
-  --grid: #2c2c2a;
-  --border: #34332f;
+  --grid: #243246;
+  --border: #2c3b52;
   --accent: #3987e5;
   --series-1: #3987e5;
   --series-2: #d95926;
