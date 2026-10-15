@@ -8,65 +8,177 @@
 </head>
 <body>
 <header>
-  <div class="brand"><strong>ELI</strong><span>Evaluation Lab for Inference</span></div>
-  <div class="controls">
-    <label>Modelo <select id="model"></select></label>
-    <button id="refresh" type="button">Actualizar</button>
-    <button id="unload" type="button" title="Libera la VRAM descargando los modelos de Ollama">Descargar modelos</button>
-  </div>
+  <div class="brand"><strong>ELI</strong><span>Evaluation Lab for Inference</span><span class="ver" id="ver">v0.2</span></div>
+  <nav id="nav" aria-label="Secciones">
+    <button type="button" data-nav="dashboard">Dashboard</button>
+    <button type="button" data-nav="models">Models</button>
+    <button type="button" data-nav="benchmark">Benchmark<span class="dot" id="bench-dot" hidden title="Hay una evaluación en curso"></span></button>
+    <button type="button" data-nav="compare">Compare</button>
+    <button type="button" data-nav="history">History</button>
+    <button type="button" data-nav="chat">Chat</button>
+  </nav>
 </header>
 
 <main>
   <div id="banner" class="banner" hidden></div>
 
   <section class="card" aria-labelledby="gia-title">
-    <h2 id="gia-title">GIA · GPU <span class="sub" id="gia-status">conectando…</span></h2>
-    <div class="tiles">
-      <div class="tile"><div class="tile-head"><span class="tile-title">VRAM</span><span class="tile-value" id="val-vram">—</span></div><canvas id="c-vram" aria-label="VRAM en los últimos 2 minutos"></canvas></div>
-      <div class="tile"><div class="tile-head"><span class="tile-title">Uso de GPU</span><span class="tile-value" id="val-util">—</span></div><canvas id="c-util" aria-label="Uso de la GPU en los últimos 2 minutos"></canvas></div>
-      <div class="tile"><div class="tile-head"><span class="tile-title">Consumo</span><span class="tile-value" id="val-power">—</span></div><canvas id="c-power" aria-label="Consumo en vatios en los últimos 2 minutos"></canvas></div>
-      <div class="tile"><div class="tile-head"><span class="tile-title">Temperatura</span><span class="tile-value" id="val-temp">—</span></div><canvas id="c-temp" aria-label="Temperatura en los últimos 2 minutos"></canvas></div>
+    <h2 id="gia-title">GIA · GPU <span class="sub" id="gia-status">conectando…</span>
+      <button type="button" id="gia-toggle" class="link" aria-expanded="true">Ocultar gráficas</button></h2>
+    <div id="gia-body">
+      <div class="tiles">
+        <div class="tile"><div class="tile-head"><span class="tile-title">VRAM</span><span class="tile-value" id="val-vram">—</span></div><canvas id="c-vram" aria-label="VRAM en los últimos 2 minutos"></canvas></div>
+        <div class="tile"><div class="tile-head"><span class="tile-title">Uso de GPU</span><span class="tile-value" id="val-util">—</span></div><canvas id="c-util" aria-label="Uso de la GPU en los últimos 2 minutos"></canvas></div>
+        <div class="tile"><div class="tile-head"><span class="tile-title">Consumo</span><span class="tile-value" id="val-power">—</span></div><canvas id="c-power" aria-label="Consumo en vatios en los últimos 2 minutos"></canvas></div>
+        <div class="tile"><div class="tile-head"><span class="tile-title">Temperatura</span><span class="tile-value" id="val-temp">—</span></div><canvas id="c-temp" aria-label="Temperatura en los últimos 2 minutos"></canvas></div>
+      </div>
+      <div class="chips" id="chips"></div>
+      <div class="procs" id="procs"></div>
     </div>
-    <div class="chips" id="chips"></div>
-    <div class="procs" id="procs"></div>
   </section>
 
-  <div class="body">
-    <div class="side">
-      <section class="card" aria-labelledby="ficha-title">
-        <h2 id="ficha-title">Ficha del modelo</h2>
-        <dl class="facts" id="ficha"><dt>Modelo</dt><dd>—</dd></dl>
-      </section>
-      <section class="card" aria-labelledby="ajustes-title">
-        <h2 id="ajustes-title">Ajustes</h2>
-        <div class="settings">
-          <label title="Tokens de contexto que Ollama reserva. Si el prompt no cabe, lo recorta sin avisar.">Contexto (num_ctx)<input id="s-ctx" type="number" min="512" max="262144" step="512"></label>
-          <label>Temperatura<input id="s-temp" type="number" min="0" max="2" step="0.1"></label>
-          <label title="Misma semilla y temperatura 0 dan respuestas repetibles.">Semilla<input id="s-seed" type="number" min="0" step="1"></label>
-          <label>Tokens máximos<input id="s-max" type="number" min="1" max="32768" step="64"></label>
-          <label id="think-row" hidden>Razonamiento
-            <select id="s-think"><option value="">Por defecto</option><option value="true">Activado</option><option value="false">Desactivado</option></select>
-          </label>
-          <label class="wide">Mensaje de sistema (opcional)<textarea id="s-system" placeholder="Instrucciones fijas para el modelo"></textarea></label>
-          <div class="hint">Cada respuesta usa estos ajustes y se guarda en la carpeta runs/.</div>
+  <!-- DASHBOARD -->
+  <section data-view="dashboard" hidden>
+    <div class="grid2">
+      <div class="card"><h2>Sistema</h2><dl class="facts" id="dash-system"></dl></div>
+      <div class="card"><h2>Modelos</h2><div id="dash-models"></div></div>
+    </div>
+    <div class="card"><h2>Evaluación <span class="sub" id="dash-bench-sub"></span></h2><div id="dash-bench"></div></div>
+    <div class="card"><h2>Evaluaciones recientes</h2><div id="dash-runs"></div></div>
+  </section>
+
+  <!-- MODELS -->
+  <section data-view="models" hidden>
+    <div class="card">
+      <h2>Inventario <span class="sub" id="models-sub"></span></h2>
+      <div class="row toolbar">
+        <input id="models-filter" type="search" placeholder="Filtrar por nombre, familia, cuantización…" aria-label="Filtrar modelos">
+        <button type="button" id="models-refresh">Actualizar</button>
+      </div>
+      <div class="scroll"><table id="models-table" class="data"></table></div>
+      <p class="hint">«Descargar de VRAM» libera la memoria y conserva el modelo en disco. «Eliminar» lo borra del disco y exige confirmar el nombre exacto.</p>
+    </div>
+    <div class="card" id="inspector" hidden><h2>Model Inspector <span class="sub" id="inspector-name"></span></h2><div id="inspector-body"></div></div>
+  </section>
+
+  <!-- BENCHMARK -->
+  <section data-view="benchmark" hidden>
+    <div class="grid2 bench-grid">
+      <div class="card">
+        <h2>1 · Modelos</h2>
+        <div id="bench-models" class="checklist"></div>
+        <p class="hint">Se ejecutan uno tras otro y todos reciben las mismas pruebas. Máximo 8.</p>
+      </div>
+      <div class="card">
+        <h2>2 · Configuración</h2>
+        <div class="settings" id="bench-form">
+          <label>Tipo<select id="b-mode"><option value="quick">Rápido (subconjunto)</option><option value="full">Completo</option></select></label>
+          <fieldset><legend>Categorías</legend><div id="b-cats" class="checklist small"></div></fieldset>
+          <label>Repeticiones<input id="b-reps" type="number" min="1" max="10" value="1"></label>
+          <label>Temperatura<input id="b-temp" type="number" min="0" max="2" step="0.1" value="0"></label>
+          <label>Semilla<input id="b-seed" type="number" min="0" value="42"></label>
+          <label title="Vacío: cada prueba usa su propio contexto (4096).">Contexto base<input id="b-ctx" type="number" min="512" max="65536" step="512" placeholder="por prueba"></label>
+          <label title="Vacío: cada prueba usa su propio máximo.">Tokens máximos<input id="b-pred" type="number" min="16" max="8192" step="16" placeholder="por prueba"></label>
+          <label>Razonamiento
+            <select id="b-think"><option value="false">Desactivado</option><option value="true">Activado</option><option value="">Por defecto del modelo</option></select></label>
+          <label>Tiempo máx. por prueba (s)<input id="b-timeout" type="number" min="10" max="1800" value="180"></label>
+          <fieldset><legend>Tamaños de contexto a probar</legend><div id="b-ctxsizes" class="checklist small"></div>
+            <p class="hint">Solo afectan a la categoría «Contexto largo». Más contexto = más VRAM y tiempo.</p></fieldset>
+          <label class="check"><input id="b-warmup" type="checkbox" checked> Calentar el modelo antes (el tiempo de carga se mide aparte)</label>
+          <label class="check"><input id="b-unload" type="checkbox" checked> Descargar cada modelo de la VRAM al terminarlo</label>
         </div>
+        <div class="row"><button type="button" id="b-start" class="primary">Iniciar evaluación</button><span id="b-summary" class="hint"></span></div>
+        <p id="b-error" class="error" hidden></p>
+      </div>
+    </div>
+    <div class="card" id="bench-progress" hidden>
+      <h2>Progreso <span class="sub" id="bp-state"></span></h2>
+      <div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" id="bp-bar"><div id="bp-fill"></div></div>
+      <div id="bp-info" class="hint"></div>
+      <div class="chips" id="bp-counts"></div>
+      <div class="row"><button type="button" id="bp-cancel">Cancelar evaluación</button><a id="bp-link" class="link" href="#history" hidden>Ver resultados</a></div>
+      <div class="grid2"><div><h3>Últimos resultados</h3><div id="bp-recent"></div></div><div><h3>Errores</h3><div id="bp-errors"></div></div></div>
+    </div>
+  </section>
+
+  <!-- COMPARE -->
+  <section data-view="compare" hidden>
+    <div class="card">
+      <h2>Comparar modelos <span class="sub" id="cmp-sub"></span></h2>
+      <div class="row toolbar">
+        <label>Tamaño<select id="cmp-size"><option value="">Todos</option></select></label>
+        <label>Ordenar por<select id="cmp-sort"><option value="quality">Calidad</option><option value="speed">Velocidad</option><option value="vram">VRAM (menor)</option><option value="efficiency">Eficiencia</option></select></label>
+        <label title="Marca los modelos con parámetros entre 70 % y 130 % de los del elegido">Parecidos a<select id="cmp-similar"><option value="">—</option></select></label>
+        <button type="button" id="cmp-run" class="primary">Comparar</button>
+      </div>
+      <div id="cmp-models" class="checklist"></div>
+      <p class="hint">Se usa la ejecución más reciente de cada modelo y solo las pruebas que todos los elegidos hicieron con las mismas condiciones. Máximo 8 modelos.</p>
+    </div>
+    <div id="cmp-out"></div>
+  </section>
+
+  <!-- HISTORY -->
+  <section data-view="history" hidden>
+    <div class="card"><h2>Ejecuciones <span class="sub" id="hist-sub"></span></h2><div class="scroll" id="hist-runs"></div></div>
+    <div class="card" id="hist-detail" hidden><h2>Detalle <span class="sub" id="hd-title"></span></h2><div id="hd-body"></div></div>
+    <div class="card"><h2>Chats guardados</h2><div class="scroll" id="hist-chats"></div></div>
+  </section>
+
+  <!-- CHAT -->
+  <section data-view="chat" hidden>
+    <div class="card"><div class="row toolbar">
+      <label>Modelo <select id="model"></select></label>
+      <button id="refresh" type="button">Actualizar</button>
+      <button id="unload" type="button" title="Libera la VRAM descargando los modelos de Ollama">Descargar modelos</button>
+    </div></div>
+    <div class="body">
+      <div class="side">
+        <section class="card" aria-labelledby="ficha-title">
+          <h2 id="ficha-title">Ficha del modelo</h2>
+          <dl class="facts" id="ficha"><dt>Modelo</dt><dd>—</dd></dl>
+        </section>
+        <section class="card" aria-labelledby="ajustes-title">
+          <h2 id="ajustes-title">Ajustes</h2>
+          <div class="settings">
+            <label title="Tokens de contexto que Ollama reserva. Si el prompt no cabe, lo recorta sin avisar.">Contexto (num_ctx)<input id="s-ctx" type="number" min="512" max="262144" step="512"></label>
+            <label>Temperatura<input id="s-temp" type="number" min="0" max="2" step="0.1"></label>
+            <label title="Misma semilla y temperatura 0 dan respuestas repetibles.">Semilla<input id="s-seed" type="number" min="0" step="1"></label>
+            <label>Tokens máximos<input id="s-max" type="number" min="1" max="32768" step="64"></label>
+            <label id="think-row" hidden>Razonamiento
+              <select id="s-think"><option value="">Por defecto</option><option value="true">Activado</option><option value="false">Desactivado</option></select>
+            </label>
+            <label class="wide">Mensaje de sistema (opcional)<textarea id="s-system" placeholder="Instrucciones fijas para el modelo"></textarea></label>
+            <div class="hint">Cada respuesta usa estos ajustes y se guarda en la carpeta runs/.</div>
+          </div>
+        </section>
+      </div>
+      <section class="card" aria-labelledby="chat-title">
+        <h2 id="chat-title">Chat con métricas</h2>
+        <div id="log" role="log" aria-live="polite"></div>
+        <form id="chat">
+          <textarea id="prompt" placeholder="Escribe un mensaje. Enter envía, Shift+Enter hace un salto de línea." aria-label="Mensaje"></textarea>
+          <div class="row">
+            <button id="send" class="primary" type="submit">Enviar</button>
+            <button id="stop" type="button" hidden>Detener</button>
+            <button id="reset" type="button" title="Borra la conversación (el contexto vuelve a empezar)">Nueva conversación</button>
+          </div>
+        </form>
       </section>
     </div>
-
-    <section class="card" aria-labelledby="chat-title">
-      <h2 id="chat-title">Chat con métricas</h2>
-      <div id="log" role="log" aria-live="polite"></div>
-      <form id="chat">
-        <textarea id="prompt" placeholder="Escribe un mensaje. Enter envía, Shift+Enter hace un salto de línea." aria-label="Mensaje"></textarea>
-        <div class="row">
-          <button id="send" class="primary" type="submit">Enviar</button>
-          <button id="stop" type="button" hidden>Detener</button>
-          <button id="reset" type="button" title="Borra la conversación (el contexto vuelve a empezar)">Nueva conversación</button>
-        </div>
-      </form>
-    </section>
-  </div>
+  </section>
 </main>
+
+<dialog id="dlg" aria-labelledby="dlg-title"><form method="dialog" id="dlg-form"><h3 id="dlg-title"></h3><div id="dlg-body"></div>
+  <div class="row end"><button type="button" id="dlg-cancel">Cancelar</button><button type="submit" id="dlg-ok" class="primary">Aceptar</button></div></form></dialog>
+<div id="tip" class="tip" role="tooltip" hidden></div>
+
 <script src="/app.js"></script>
+<script src="/nav.js"></script>
+<script src="/charts.js"></script>
+<script src="/dashboard.js"></script>
+<script src="/models.js"></script>
+<script src="/bench.js"></script>
+<script src="/compare.js"></script>
+<script src="/history.js"></script>
 </body>
 </html>

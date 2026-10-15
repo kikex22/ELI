@@ -168,10 +168,16 @@ def idle_power(samples: list[Sample]) -> float | None:
 
 
 class GPUMonitor:
-    def __init__(self, interval_ms: int = INTERVAL_MS, history: int = 2400, command: list[str] | None = None):
+    def __init__(
+        self, interval_ms: int = INTERVAL_MS, history: int = 2400, command: list[str] | None = None, gpu_index: int = 0
+    ):
         self.interval_ms = interval_ms
+        self.gpu_index = gpu_index
+        # `-i` fija una GPU: con varias, nvidia-smi imprimiria una linea por GPU y se mezclarian las lecturas.
         self.command = command or [
             "nvidia-smi",
+            "-i",
+            str(gpu_index),
             f"--query-gpu={','.join(FIELDS)}",
             "--format=csv,noheader,nounits",
             "-lms",

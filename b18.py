@@ -22,11 +22,13 @@ def main() -> int:
     parser.add_argument("--port", type=int, default=int(os.environ.get("ELI_PORT", "8766")))
     parser.add_argument("--ollama-url", default=os.environ.get("ELI_OLLAMA_URL", DEFAULT_URL))
     parser.add_argument("--no-browser", action="store_true", help="no abrir el navegador")
+    parser.add_argument("--runs-dir", type=Path, default=Path(os.environ.get("ELI_RUNS_DIR", ROOT / "runs")),
+                        help="carpeta donde se guardan chats y ejecuciones (por defecto ./runs)")
     args = parser.parse_args()
 
     gpu = GPUMonitor()
     gpu.start()
-    app = App(Ollama(args.ollama_url), gpu, ROOT / "runs", args.port)
+    app = App(Ollama(args.ollama_url), gpu, args.runs_dir, args.port)
     try:
         server = make_server(app, args.port)
     except OSError as exc:

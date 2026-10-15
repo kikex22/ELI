@@ -1,0 +1,40 @@
+{
+  "rules_version": "2026-10-15.1",
+  "description": "Reglas informativas de ELI sobre la viabilidad de ejecutar un modelo de Ollama con TensorRT-LLM. No instalan ni convierten nada, y no garantizan soporte: la compatibilidad real depende de la version concreta de TensorRT-LLM, del contenedor y del checkpoint.",
+  "architectures_listed": {
+    "ids": ["llama", "mistral", "mixtral", "qwen2", "qwen3", "qwen3moe", "gemma", "gemma2", "gemma3", "phi3"],
+    "source": "Lista mantenida por ELI de familias que TensorRT-LLM documenta como soportadas. Es informativa y debe confirmarse contra la version de TensorRT-LLM que se vaya a usar.",
+    "rule_id": "R-ARCH-1"
+  },
+  "architectures_pending": {
+    "gemma4": "Hallazgo local del 2026-10-08 (CLU_TensorRT_Test/docs/2026-10-08-findings.md): las versiones de TensorRT-LLM con soporte de Gemma 4 requieren CUDA 13; con el driver 570 y una GeForce no esta establecido que ese entorno sea utilizable. El contenedor 25.05 (CUDA 12.8) es anterior a Gemma 4."
+  },
+  "source_formats": {
+    "unsupported_as_source": ["gguf"],
+    "evidence": "Hallazgo local del 2026-10-08: TensorRT-LLM carga checkpoints de Hugging Face, no los GGUF de Ollama.",
+    "rule_id": "R-FMT-1"
+  },
+  "precisions": {
+    "float": ["F32", "FP32", "F16", "FP16", "BF16"],
+    "gguf_quant_pattern": "^(I?Q\\d.*|MXFP4)$",
+    "rule_id": "R-QNT-1"
+  },
+  "hardware_requirements": {
+    "FP8": {"min_compute_cap": 8.9, "note": "FP8 requiere tensor cores de Ada (SM 8.9) o Hopper (SM 9.0) o posteriores.", "rule_id": "R-HW-1"}
+  },
+  "weight_bytes_per_param": {"BF16/FP16": 2.0, "FP8/INT8": 1.0, "INT4": 0.5},
+  "memory_rule_id": "R-MEM-1",
+  "memory_fit_ratio": 0.9,
+  "local_evidence": [
+    {
+      "id": "EV-2026-10-08-qwen25-1.5b",
+      "architecture": "qwen2",
+      "precision": "BF16",
+      "trtllm_version": "0.19.0",
+      "backend": "PyTorch",
+      "container": "nvcr.io/nvidia/tritonserver:25.05-trtllm-python-py3",
+      "source": "CLU_TensorRT_Test/docs/2026-10-08-findings.md",
+      "summary": "Qwen2.5-1.5B-Instruct en BF16 funciono en esta maquina (RTX 4060 Ti, CUDA 12.8) y respondio correctamente."
+    }
+  ]
+}

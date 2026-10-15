@@ -1,6 +1,15 @@
 # Roadmap de ELI (Evaluation Lab for Inference)
 
-Estado (15 de octubre de 2026): **Parte 1 construida y verificada**; el resto es plan.
+Estado (15 de octubre de 2026): **v0.2 construida**. Cubre la Parte 1 y, ademas, buena parte de las Partes 2 a 6 en una
+primera version funcional: benchmark automatico (velocidad, VRAM y contexto), calidad verificable, comparacion e historial,
+Model Inspector con analisis TensorRT-LLM informativo y administracion de modelos. Lo que esta en el README como «limites
+conocidos» sigue pendiente; el resto de este documento es el plan original.
+
+Pendiente del roadmap tras la v0.2: Parte 3 en profundidad (prueba de calor sostenida), Parte 6 (vision con tus frames y
+etiquetas), Parte 7 (adaptador TensorRT-LLM real), Parte 8 (optimizar y volver a medir), Parte 9 (decision sobre entrenamiento)
+y Parte 10 (conectar con CLU).
+
+Estado anterior (Parte 1):
 Resultados de la Parte 1 que condicionan las siguientes:
 
 - Las lecturas de GIA coinciden con una captura independiente de `nvidia-smi`

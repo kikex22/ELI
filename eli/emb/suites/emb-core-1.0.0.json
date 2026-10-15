@@ -1,0 +1,663 @@
+{
+ "suite_id": "emb-core",
+ "version": "1.0.0",
+ "description": "Banco base de embeddings de ELI: recuperacion en espanol, ingles y entre idiomas, sentido de la similitud, estabilidad y rendimiento. Cada consulta tiene un unico documento correcto, conocido por construccion.",
+ "documents": [
+  {
+   "id": "e01",
+   "lang": "es",
+   "text": "Python es un lenguaje de programación interpretado, conocido por su sintaxis legible y su amplio ecosistema de bibliotecas para ciencia de datos."
+  },
+  {
+   "id": "e02",
+   "lang": "es",
+   "text": "La pitón es una serpiente constrictora no venenosa que habita en regiones tropicales de África y Asia y puede superar los seis metros de longitud."
+  },
+  {
+   "id": "e03",
+   "lang": "es",
+   "text": "Un banco es una entidad financiera que recibe depósitos, concede préstamos y ofrece servicios como transferencias y tarjetas de crédito."
+  },
+  {
+   "id": "e04",
+   "lang": "es",
+   "text": "El banco del parque era de madera y estaba pintado de verde; los vecinos solían sentarse allí a leer por la tarde."
+  },
+  {
+   "id": "e05",
+   "lang": "es",
+   "text": "El volcán Popocatépetl, situado en el centro de México, registra emisiones frecuentes de ceniza y vapor."
+  },
+  {
+   "id": "e06",
+   "lang": "es",
+   "text": "Durante la fotosíntesis las plantas convierten la luz solar, el agua y el dióxido de carbono en glucosa y oxígeno."
+  },
+  {
+   "id": "e07",
+   "lang": "es",
+   "text": "Para preparar una tortilla española se fríen patatas en aceite, se mezclan con huevo batido y se cuaja la masa en la sartén."
+  },
+  {
+   "id": "e08",
+   "lang": "es",
+   "text": "El equipo ganó la final con un gol en el último minuto tras un partido muy disputado en el estadio."
+  },
+  {
+   "id": "e09",
+   "lang": "es",
+   "text": "Júpiter es el planeta más grande del sistema solar y posee una tormenta persistente conocida como la Gran Mancha Roja."
+  },
+  {
+   "id": "e10",
+   "lang": "es",
+   "text": "Miguel de Cervantes publicó la primera parte de Don Quijote de la Mancha en 1605, una novela fundacional de la literatura moderna."
+  },
+  {
+   "id": "e11",
+   "lang": "es",
+   "text": "Las vacunas entrenan al sistema inmunitario para reconocer un patógeno sin causar la enfermedad completa."
+  },
+  {
+   "id": "e12",
+   "lang": "es",
+   "text": "El aumento de los gases de efecto invernadero eleva la temperatura media del planeta y altera los patrones de lluvia."
+  },
+  {
+   "id": "e13",
+   "lang": "es",
+   "text": "Una cadena de bloques es un registro distribuido en el que cada bloque contiene el resumen criptográfico del anterior."
+  },
+  {
+   "id": "e14",
+   "lang": "es",
+   "text": "El café arábica se cultiva en zonas montañosas y se tuesta para desarrollar su aroma; su sabor suele ser más suave que el del robusta."
+  },
+  {
+   "id": "e15",
+   "lang": "es",
+   "text": "Marte es conocido como el planeta rojo por el óxido de hierro de su superficie y tiene el volcán más alto del sistema solar."
+  },
+  {
+   "id": "n01",
+   "lang": "en",
+   "text": "Apple designs consumer electronics such as the iPhone and the Mac, and also develops its own operating systems and services."
+  },
+  {
+   "id": "n02",
+   "lang": "en",
+   "text": "An apple is a sweet, crunchy fruit that grows on trees in temperate climates and is commonly eaten raw or baked in pies."
+  },
+  {
+   "id": "n03",
+   "lang": "en",
+   "text": "Java is the most populous island in Indonesia and is home to the capital city, Jakarta, as well as several active volcanoes."
+  },
+  {
+   "id": "n04",
+   "lang": "en",
+   "text": "Java is an object-oriented programming language designed to run on any device that has a virtual machine installed."
+  },
+  {
+   "id": "n05",
+   "lang": "en",
+   "text": "A mouse is a small rodent with a pointed snout that nests in walls and fields and feeds on grains and seeds."
+  },
+  {
+   "id": "n06",
+   "lang": "en",
+   "text": "A computer mouse is a pointing device that detects movement across a surface and moves the cursor on the screen."
+  },
+  {
+   "id": "n07",
+   "lang": "en",
+   "text": "The Great Wall of China was built over many centuries to protect northern borders and stretches for thousands of kilometres."
+  },
+  {
+   "id": "n08",
+   "lang": "en",
+   "text": "A black hole is a region of space where gravity is so strong that nothing, not even light, can escape once it crosses the event horizon."
+  },
+  {
+   "id": "n09",
+   "lang": "en",
+   "text": "A marathon is a long-distance running race of 42.195 kilometres, first inspired by the legend of a Greek messenger."
+  },
+  {
+   "id": "n10",
+   "lang": "en",
+   "text": "Antibiotics kill or stop the growth of bacteria but they are not effective against viral infections such as the common cold."
+  },
+  {
+   "id": "n11",
+   "lang": "en",
+   "text": "Wind turbines and solar panels generate electricity without burning fossil fuels, which reduces carbon emissions."
+  },
+  {
+   "id": "n12",
+   "lang": "en",
+   "text": "William Shakespeare wrote tragedies such as Hamlet and Macbeth, along with comedies and sonnets, in the late sixteenth century."
+  },
+  {
+   "id": "n13",
+   "lang": "en",
+   "text": "Sourdough bread rises thanks to a fermented mixture of flour and water that contains wild yeast and lactic acid bacteria."
+  },
+  {
+   "id": "n14",
+   "lang": "en",
+   "text": "Machine learning algorithms learn patterns from data to make predictions without being explicitly programmed for each rule."
+  },
+  {
+   "id": "n15",
+   "lang": "en",
+   "text": "Ocean tides are caused mainly by the gravitational pull of the moon and the sun, producing two high tides each day in most coastal places."
+  }
+ ],
+ "queries": [
+  {
+   "id": "q01",
+   "lang": "es",
+   "text": "¿Qué lenguaje fácil de leer se usa mucho en análisis de datos?",
+   "relevant": [
+    "e01"
+   ],
+   "kind": "mono"
+  },
+  {
+   "id": "q02",
+   "lang": "es",
+   "text": "reptil enorme sin veneno que aprieta a sus presas en los trópicos",
+   "relevant": [
+    "e02"
+   ],
+   "kind": "mono"
+  },
+  {
+   "id": "q03",
+   "lang": "es",
+   "text": "dónde puedo pedir un crédito o guardar mi dinero",
+   "relevant": [
+    "e03"
+   ],
+   "kind": "mono"
+  },
+  {
+   "id": "q04",
+   "lang": "es",
+   "text": "lugar para sentarse en el parque hecho de madera verde",
+   "relevant": [
+    "e04"
+   ],
+   "kind": "mono"
+  },
+  {
+   "id": "q05",
+   "lang": "es",
+   "text": "montaña mexicana que expulsa ceniza",
+   "relevant": [
+    "e05"
+   ],
+   "kind": "mono"
+  },
+  {
+   "id": "q06",
+   "lang": "es",
+   "text": "cómo producen alimento las plantas con la luz del sol",
+   "relevant": [
+    "e06"
+   ],
+   "kind": "mono"
+  },
+  {
+   "id": "q07",
+   "lang": "es",
+   "text": "cómo se hace un plato típico con huevo y papas fritas",
+   "relevant": [
+    "e07"
+   ],
+   "kind": "mono"
+  },
+  {
+   "id": "q08",
+   "lang": "es",
+   "text": "quién ganó el campeonato con un tanto sobre la hora",
+   "relevant": [
+    "e08"
+   ],
+   "kind": "mono"
+  },
+  {
+   "id": "q09",
+   "lang": "es",
+   "text": "planeta gigante con una tormenta enorme y duradera",
+   "relevant": [
+    "e09"
+   ],
+   "kind": "mono"
+  },
+  {
+   "id": "q10",
+   "lang": "es",
+   "text": "autor de una famosa novela publicada en 1605",
+   "relevant": [
+    "e10"
+   ],
+   "kind": "mono"
+  },
+  {
+   "id": "q11",
+   "lang": "es",
+   "text": "cómo una inmunización prepara las defensas del cuerpo",
+   "relevant": [
+    "e11"
+   ],
+   "kind": "mono"
+  },
+  {
+   "id": "q12",
+   "lang": "es",
+   "text": "por qué sube la temperatura global y cambian las lluvias",
+   "relevant": [
+    "e12"
+   ],
+   "kind": "mono"
+  },
+  {
+   "id": "q13",
+   "lang": "es",
+   "text": "registro digital compartido con bloques enlazados por huellas criptográficas",
+   "relevant": [
+    "e13"
+   ],
+   "kind": "mono"
+  },
+  {
+   "id": "q14",
+   "lang": "es",
+   "text": "grano de montaña de sabor suave que se tuesta",
+   "relevant": [
+    "e14"
+   ],
+   "kind": "mono"
+  },
+  {
+   "id": "q15",
+   "lang": "es",
+   "text": "volcán más alto del sistema solar",
+   "relevant": [
+    "e15"
+   ],
+   "kind": "mono"
+  },
+  {
+   "id": "q16",
+   "lang": "en",
+   "text": "company that makes the iPhone and laptops",
+   "relevant": [
+    "n01"
+   ],
+   "kind": "mono"
+  },
+  {
+   "id": "q17",
+   "lang": "en",
+   "text": "sweet crunchy fruit baked in pies",
+   "relevant": [
+    "n02"
+   ],
+   "kind": "mono"
+  },
+  {
+   "id": "q18",
+   "lang": "en",
+   "text": "Indonesian island where Jakarta is located",
+   "relevant": [
+    "n03"
+   ],
+   "kind": "mono"
+  },
+  {
+   "id": "q19",
+   "lang": "en",
+   "text": "object-oriented language that runs on a virtual machine",
+   "relevant": [
+    "n04"
+   ],
+   "kind": "mono"
+  },
+  {
+   "id": "q20",
+   "lang": "en",
+   "text": "small rodent that eats seeds and lives in walls",
+   "relevant": [
+    "n05"
+   ],
+   "kind": "mono"
+  },
+  {
+   "id": "q21",
+   "lang": "en",
+   "text": "device that moves the cursor on a screen",
+   "relevant": [
+    "n06"
+   ],
+   "kind": "mono"
+  },
+  {
+   "id": "q22",
+   "lang": "en",
+   "text": "ancient fortification built to guard northern frontiers",
+   "relevant": [
+    "n07"
+   ],
+   "kind": "mono"
+  },
+  {
+   "id": "q23",
+   "lang": "en",
+   "text": "region of space from which light cannot escape",
+   "relevant": [
+    "n08"
+   ],
+   "kind": "mono"
+  },
+  {
+   "id": "q24",
+   "lang": "en",
+   "text": "42 kilometre race inspired by a Greek legend",
+   "relevant": [
+    "n09"
+   ],
+   "kind": "mono"
+  },
+  {
+   "id": "q25",
+   "lang": "en",
+   "text": "medicine against bacteria that does not work on colds",
+   "relevant": [
+    "n10"
+   ],
+   "kind": "mono"
+  },
+  {
+   "id": "q26",
+   "lang": "en",
+   "text": "generate power from wind and sun without emissions",
+   "relevant": [
+    "n11"
+   ],
+   "kind": "mono"
+  },
+  {
+   "id": "q27",
+   "lang": "en",
+   "text": "author of Hamlet and Macbeth",
+   "relevant": [
+    "n12"
+   ],
+   "kind": "mono"
+  },
+  {
+   "id": "q28",
+   "lang": "en",
+   "text": "bread leavened with wild yeast starter",
+   "relevant": [
+    "n13"
+   ],
+   "kind": "mono"
+  },
+  {
+   "id": "q29",
+   "lang": "en",
+   "text": "algorithms that learn from data instead of fixed rules",
+   "relevant": [
+    "n14"
+   ],
+   "kind": "mono"
+  },
+  {
+   "id": "q30",
+   "lang": "en",
+   "text": "why the sea level rises and falls twice a day",
+   "relevant": [
+    "n15"
+   ],
+   "kind": "mono"
+  },
+  {
+   "id": "q31",
+   "lang": "es",
+   "text": "dispositivo para mover el puntero del ordenador",
+   "relevant": [
+    "n06"
+   ],
+   "kind": "cross"
+  },
+  {
+   "id": "q32",
+   "lang": "es",
+   "text": "isla de Indonesia donde está Yakarta",
+   "relevant": [
+    "n03"
+   ],
+   "kind": "cross"
+  },
+  {
+   "id": "q33",
+   "lang": "es",
+   "text": "fruta dulce y crujiente de los árboles",
+   "relevant": [
+    "n02"
+   ],
+   "kind": "cross"
+  },
+  {
+   "id": "q34",
+   "lang": "es",
+   "text": "pan de masa madre con levadura silvestre",
+   "relevant": [
+    "n13"
+   ],
+   "kind": "cross"
+  },
+  {
+   "id": "q35",
+   "lang": "en",
+   "text": "Mexican volcano that emits ash",
+   "relevant": [
+    "e05"
+   ],
+   "kind": "cross"
+  },
+  {
+   "id": "q36",
+   "lang": "en",
+   "text": "plants making food from sunlight",
+   "relevant": [
+    "e06"
+   ],
+   "kind": "cross"
+  },
+  {
+   "id": "q37",
+   "lang": "en",
+   "text": "snake that squeezes its prey in tropical regions",
+   "relevant": [
+    "e02"
+   ],
+   "kind": "cross"
+  },
+  {
+   "id": "q38",
+   "lang": "en",
+   "text": "where to deposit money and get a loan",
+   "relevant": [
+    "e03"
+   ],
+   "kind": "cross"
+  },
+  {
+   "id": "q39",
+   "lang": "en",
+   "text": "tallest volcano in the solar system",
+   "relevant": [
+    "e15"
+   ],
+   "kind": "cross"
+  },
+  {
+   "id": "q40",
+   "lang": "en",
+   "text": "classic Spanish novel published in 1605",
+   "relevant": [
+    "e10"
+   ],
+   "kind": "cross"
+  }
+ ],
+ "triplets": [
+  {
+   "id": "t01",
+   "kind": "es",
+   "anchor": "El gato duerme sobre el sofá.",
+   "positive": "Un felino descansa en el sillón.",
+   "negative": "El mercado de valores cayó hoy."
+  },
+  {
+   "id": "t02",
+   "kind": "es",
+   "anchor": "Necesito comprar pan y leche.",
+   "positive": "Tengo que ir a adquirir pan y leche en la tienda.",
+   "negative": "La conferencia de física empieza mañana."
+  },
+  {
+   "id": "t03",
+   "kind": "es",
+   "anchor": "El tren llegó con retraso a la estación.",
+   "positive": "La estación recibió el tren más tarde de lo previsto.",
+   "negative": "El tren tiene vagones de color rojo y azul."
+  },
+  {
+   "id": "t04",
+   "kind": "es",
+   "anchor": "Me duele la cabeza desde ayer.",
+   "positive": "Tengo dolor de cabeza desde el día anterior.",
+   "negative": "Me gusta la música desde que era niño."
+  },
+  {
+   "id": "t05",
+   "kind": "es",
+   "anchor": "El banco aprobó mi préstamo.",
+   "positive": "La entidad financiera concedió el crédito que pedí.",
+   "negative": "El banco de madera está en el jardín."
+  },
+  {
+   "id": "t06",
+   "kind": "es",
+   "anchor": "Los científicos descubrieron una nueva especie de rana.",
+   "positive": "Investigadores hallaron una especie anfibia desconocida.",
+   "negative": "Los científicos publicaron un informe sobre el presupuesto."
+  },
+  {
+   "id": "t07",
+   "kind": "en",
+   "anchor": "The children are playing in the garden.",
+   "positive": "Kids are having fun outside in the yard.",
+   "negative": "The stock market closed lower today."
+  },
+  {
+   "id": "t08",
+   "kind": "en",
+   "anchor": "She forgot her umbrella at the office.",
+   "positive": "She left her umbrella behind at work.",
+   "negative": "She bought a new umbrella for the beach."
+  },
+  {
+   "id": "t09",
+   "kind": "en",
+   "anchor": "The company announced record profits.",
+   "positive": "The firm reported its highest earnings ever.",
+   "negative": "The company moved to a new building."
+  },
+  {
+   "id": "t10",
+   "kind": "en",
+   "anchor": "He is learning to play the guitar.",
+   "positive": "He is studying how to play guitar.",
+   "negative": "He broke the strings of his old violin."
+  },
+  {
+   "id": "t11",
+   "kind": "en",
+   "anchor": "The bank approved my loan.",
+   "positive": "The lender granted the credit I asked for.",
+   "negative": "The river bank was covered in mud."
+  },
+  {
+   "id": "t12",
+   "kind": "en",
+   "anchor": "Heavy rain flooded the streets.",
+   "positive": "Intense rainfall left the roads under water.",
+   "negative": "Heavy boxes were stacked in the street."
+  },
+  {
+   "id": "t13",
+   "kind": "cross",
+   "anchor": "El perro ladra por la noche.",
+   "positive": "The dog barks at night.",
+   "negative": "The cat sleeps all day."
+  },
+  {
+   "id": "t14",
+   "kind": "cross",
+   "anchor": "Quiero reservar una mesa para dos.",
+   "positive": "I would like to book a table for two.",
+   "negative": "I would like to buy a car."
+  },
+  {
+   "id": "t15",
+   "kind": "cross",
+   "anchor": "La biblioteca cierra a las ocho.",
+   "positive": "The library closes at eight.",
+   "negative": "The pharmacy opens at nine."
+  },
+  {
+   "id": "t16",
+   "kind": "cross",
+   "anchor": "The weather is lovely today.",
+   "positive": "Hoy hace un tiempo precioso.",
+   "negative": "Hoy tengo mucho trabajo."
+  },
+  {
+   "id": "t17",
+   "kind": "cross",
+   "anchor": "My brother works in a hospital.",
+   "positive": "Mi hermano trabaja en un hospital.",
+   "negative": "Mi hermana estudia en una universidad."
+  },
+  {
+   "id": "t18",
+   "kind": "cross",
+   "anchor": "We are going to the beach tomorrow.",
+   "positive": "Mañana vamos a la playa.",
+   "negative": "Ayer fuimos al cine."
+  }
+ ],
+ "stability_texts": [
+  "La inteligencia artificial transforma la industria.",
+  "Machine learning models need good data.",
+  "Un texto corto."
+ ],
+ "performance": {
+  "short_words": 10,
+  "medium_words": 80,
+  "long_words": 250,
+  "batch_sizes": [
+   1,
+   8,
+   32
+  ],
+  "default_repetitions": 5
+ }
+}

@@ -1,0 +1,2128 @@
+{
+ "suite_id": "eli-core",
+ "version": "1.0.0",
+ "description": "Banco base de ELI: razonamiento, matematicas, programacion, comprension, instrucciones, formatos, idiomas y contexto. Todas las pruebas tienen criterio verificable; las respuestas calculables las calcula el generador.",
+ "categories": {
+  "logic": "Razonamiento lógico",
+  "math": "Matemáticas",
+  "code": "Programación",
+  "reading": "Comprensión de textos",
+  "instructions": "Seguimiento de instrucciones",
+  "format": "Respuestas estructuradas",
+  "language": "Español e inglés",
+  "speed": "Generación larga (velocidad)",
+  "context": "Contexto largo"
+ },
+ "tests": [
+  {
+   "id": "logic-001",
+   "category": "logic",
+   "difficulty": "easy",
+   "language": "es",
+   "quick": true,
+   "prompt": "Todos los gatos son animales. Tom es un gato. ¿Tom es un animal? Responde solo con Sí o No.",
+   "grader": {
+    "type": "candidates",
+    "candidates": [
+     "si",
+     "no"
+    ],
+    "expected": "si"
+   },
+   "expected": "Sí",
+   "params": {
+    "num_ctx": 4096,
+    "num_predict": 768,
+    "temperature": 0,
+    "seed": 42
+   }
+  },
+  {
+   "id": "logic-002",
+   "category": "logic",
+   "difficulty": "easy",
+   "language": "es",
+   "quick": false,
+   "prompt": "Ana es más alta que Beto. Beto es más alto que Carla. ¿Quién es la persona más baja? Responde solo con el nombre.",
+   "grader": {
+    "type": "candidates",
+    "candidates": [
+     "ana",
+     "beto",
+     "carla"
+    ],
+    "expected": "carla"
+   },
+   "expected": "Carla",
+   "params": {
+    "num_ctx": 4096,
+    "num_predict": 768,
+    "temperature": 0,
+    "seed": 42
+   }
+  },
+  {
+   "id": "logic-003",
+   "category": "logic",
+   "difficulty": "easy",
+   "language": "es",
+   "quick": false,
+   "prompt": "Si hoy es miércoles, ¿qué día de la semana será dentro de 10 días? Responde solo con el nombre del día.",
+   "grader": {
+    "type": "candidates",
+    "candidates": [
+     "lunes",
+     "martes",
+     "miercoles",
+     "jueves",
+     "viernes",
+     "sabado",
+     "domingo"
+    ],
+    "expected": "sabado"
+   },
+   "expected": "Sábado",
+   "params": {
+    "num_ctx": 4096,
+    "num_predict": 768,
+    "temperature": 0,
+    "seed": 42
+   }
+  },
+  {
+   "id": "logic-004",
+   "category": "logic",
+   "difficulty": "medium",
+   "language": "es",
+   "quick": true,
+   "prompt": "Si llueve, la calle se moja. La calle está mojada. ¿Se puede concluir con certeza que llovió? Responde solo con Sí o No.",
+   "grader": {
+    "type": "candidates",
+    "candidates": [
+     "si",
+     "no"
+    ],
+    "expected": "no"
+   },
+   "expected": "No (falacia de afirmar el consecuente)",
+   "params": {
+    "num_ctx": 4096,
+    "num_predict": 768,
+    "temperature": 0,
+    "seed": 42
+   }
+  },
+  {
+   "id": "logic-005",
+   "category": "logic",
+   "difficulty": "medium",
+   "language": "es",
+   "quick": false,
+   "prompt": "2, 6, 12, 20, 30, ¿cuál es el siguiente número de la serie? Responde solo con el número.",
+   "grader": {
+    "type": "number",
+    "expected": 42
+   },
+   "expected": "42",
+   "params": {
+    "num_ctx": 4096,
+    "num_predict": 768,
+    "temperature": 0,
+    "seed": 42
+   }
+  },
+  {
+   "id": "logic-006",
+   "category": "logic",
+   "difficulty": "medium",
+   "language": "es",
+   "quick": true,
+   "prompt": "Cinco personas (Ana, Beto, Carla, Diego y Eva) terminaron una carrera, sin empates. Se sabe que: 1) Ana llegó antes que Beto. 2) Carla llegó justo después de Ana. 3) Diego llegó después de Beto. 4) Eva no llegó ni primera ni última. 5) Beto no llegó justo después de Carla. ¿Quién llegó en tercer lugar? Responde solo con el nombre.",
+   "grader": {
+    "type": "candidates",
+    "candidates": [
+     "ana",
+     "beto",
+     "carla",
+     "diego",
+     "eva"
+    ],
+    "expected": "eva"
+   },
+   "expected": "Eva",
+   "params": {
+    "num_ctx": 4096,
+    "num_predict": 768,
+    "temperature": 0,
+    "seed": 42
+   }
+  },
+  {
+   "id": "logic-007",
+   "category": "logic",
+   "difficulty": "hard",
+   "language": "es",
+   "quick": true,
+   "prompt": "En una isla hay caballeros, que siempre dicen la verdad, y mentirosos, que siempre mienten. A dice: «B es mentiroso». B dice: «C es mentiroso». C dice: «A y B son mentirosos». ¿Quiénes son caballeros? Responde solo con las letras separadas por comas, o con 'ninguno'.",
+   "grader": {
+    "type": "letters",
+    "candidates": [
+     "A",
+     "B",
+     "C"
+    ],
+    "expected": [
+     "B"
+    ]
+   },
+   "expected": "B",
+   "params": {
+    "num_ctx": 4096,
+    "num_predict": 768,
+    "temperature": 0,
+    "seed": 42
+   }
+  },
+  {
+   "id": "logic-008",
+   "category": "logic",
+   "difficulty": "hard",
+   "language": "es",
+   "quick": false,
+   "prompt": "Hay tres cajas rotuladas «Manzanas», «Naranjas» y «Mixta». Todos los rótulos están mal puestos. Sacas una fruta de la caja rotulada «Mixta» y es una manzana. ¿Qué contiene realmente la caja rotulada «Naranjas»? Responde solo con Manzanas, Naranjas o Mixta.",
+   "grader": {
+    "type": "candidates",
+    "candidates": [
+     "manzanas",
+     "naranjas",
+     "mixta"
+    ],
+    "expected": "mixta"
+   },
+   "expected": "Mixta",
+   "params": {
+    "num_ctx": 4096,
+    "num_predict": 768,
+    "temperature": 0,
+    "seed": 42
+   }
+  },
+  {
+   "id": "logic-009",
+   "category": "logic",
+   "difficulty": "hard",
+   "language": "es",
+   "quick": false,
+   "prompt": "Ningún reptil es mamífero. Algunos animales de la granja son mamíferos. ¿Se sigue necesariamente que algún animal de la granja no es reptil? Responde solo con Sí o No.",
+   "grader": {
+    "type": "candidates",
+    "candidates": [
+     "si",
+     "no"
+    ],
+    "expected": "si"
+   },
+   "expected": "Sí",
+   "params": {
+    "num_ctx": 4096,
+    "num_predict": 768,
+    "temperature": 0,
+    "seed": 42
+   }
+  },
+  {
+   "id": "math-001",
+   "category": "math",
+   "difficulty": "easy",
+   "language": "es",
+   "quick": true,
+   "prompt": "¿Cuánto es 17 × 23? Responde solo con el número.",
+   "grader": {
+    "type": "number",
+    "expected": 391
+   },
+   "expected": "391",
+   "params": {
+    "num_ctx": 4096,
+    "num_predict": 768,
+    "temperature": 0,
+    "seed": 42
+   }
+  },
+  {
+   "id": "math-002",
+   "category": "math",
+   "difficulty": "easy",
+   "language": "es",
+   "quick": false,
+   "prompt": "¿Cuánto es el 15 % de 240? Responde solo con el número.",
+   "grader": {
+    "type": "number",
+    "expected": 36
+   },
+   "expected": "36",
+   "params": {
+    "num_ctx": 4096,
+    "num_predict": 768,
+    "temperature": 0,
+    "seed": 42
+   }
+  },
+  {
+   "id": "math-003",
+   "category": "math",
+   "difficulty": "easy",
+   "language": "es",
+   "quick": false,
+   "prompt": "Resuelve 3x + 7 = 25. ¿Cuánto vale x? Responde solo con el número.",
+   "grader": {
+    "type": "number",
+    "expected": 6
+   },
+   "expected": "6",
+   "params": {
+    "num_ctx": 4096,
+    "num_predict": 768,
+    "temperature": 0,
+    "seed": 42
+   }
+  },
+  {
+   "id": "math-004",
+   "category": "math",
+   "difficulty": "medium",
+   "language": "es",
+   "quick": true,
+   "prompt": "Un tren viaja a 90 km/h durante 2 horas y 40 minutos. ¿Cuántos kilómetros recorre? Responde solo con el número.",
+   "grader": {
+    "type": "number",
+    "expected": 240
+   },
+   "expected": "240",
+   "params": {
+    "num_ctx": 4096,
+    "num_predict": 768,
+    "temperature": 0,
+    "seed": 42
+   }
+  },
+  {
+   "id": "math-005",
+   "category": "math",
+   "difficulty": "medium",
+   "language": "es",
+   "quick": false,
+   "prompt": "Después de un descuento del 20 %, un artículo cuesta 80. ¿Cuál era su precio original? Responde solo con el número.",
+   "grader": {
+    "type": "number",
+    "expected": 100
+   },
+   "expected": "100",
+   "params": {
+    "num_ctx": 4096,
+    "num_predict": 768,
+    "temperature": 0,
+    "seed": 42
+   }
+  },
+  {
+   "id": "math-006",
+   "category": "math",
+   "difficulty": "medium",
+   "language": "es",
+   "quick": false,
+   "prompt": "¿Cuál es la suma de todos los múltiplos de 3 menores que 200? Responde solo con el número, sin separadores de miles.",
+   "grader": {
+    "type": "number",
+    "expected": 6633
+   },
+   "expected": "6633",
+   "params": {
+    "num_ctx": 4096,
+    "num_predict": 768,
+    "temperature": 0,
+    "seed": 42
+   }
+  },
+  {
+   "id": "math-007",
+   "category": "math",
+   "difficulty": "medium",
+   "language": "es",
+   "quick": true,
+   "prompt": "Si x + y = 10 y x − y = 4, ¿cuánto vale x · y? Responde solo con el número.",
+   "grader": {
+    "type": "number",
+    "expected": 21
+   },
+   "expected": "21",
+   "params": {
+    "num_ctx": 4096,
+    "num_predict": 768,
+    "temperature": 0,
+    "seed": 42
+   }
+  },
+  {
+   "id": "math-008",
+   "category": "math",
+   "difficulty": "hard",
+   "language": "es",
+   "quick": false,
+   "prompt": "¿Cuántos divisores positivos tiene el número 360? Responde solo con el número.",
+   "grader": {
+    "type": "number",
+    "expected": 24
+   },
+   "expected": "24",
+   "params": {
+    "num_ctx": 4096,
+    "num_predict": 768,
+    "temperature": 0,
+    "seed": 42
+   }
+  },
+  {
+   "id": "math-009",
+   "category": "math",
+   "difficulty": "hard",
+   "language": "es",
+   "quick": true,
+   "prompt": "¿Cuál es el resto de dividir 7^100 entre 13? Responde solo con el número.",
+   "grader": {
+    "type": "number",
+    "expected": 9
+   },
+   "expected": "9",
+   "params": {
+    "num_ctx": 4096,
+    "num_predict": 768,
+    "temperature": 0,
+    "seed": 42
+   }
+  },
+  {
+   "id": "math-010",
+   "category": "math",
+   "difficulty": "hard",
+   "language": "es",
+   "quick": false,
+   "prompt": "¿De cuántas formas distintas se pueden ordenar todas las letras de la palabra CASAS? Responde solo con el número.",
+   "grader": {
+    "type": "number",
+    "expected": 30
+   },
+   "expected": "30",
+   "params": {
+    "num_ctx": 4096,
+    "num_predict": 768,
+    "temperature": 0,
+    "seed": 42
+   }
+  },
+  {
+   "id": "math-011",
+   "category": "math",
+   "difficulty": "hard",
+   "language": "es",
+   "quick": false,
+   "prompt": "La suma de tres números enteros consecutivos es 138. ¿Cuál es el mayor? Responde solo con el número.",
+   "grader": {
+    "type": "number",
+    "expected": 47
+   },
+   "expected": "47",
+   "params": {
+    "num_ctx": 4096,
+    "num_predict": 768,
+    "temperature": 0,
+    "seed": 42
+   }
+  },
+  {
+   "id": "code-001",
+   "category": "code",
+   "difficulty": "easy",
+   "language": "es",
+   "quick": true,
+   "prompt": "Escribe una función de Python llamada `es_palindromo` que reciba un texto y devuelva True si es un palíndromo, ignorando mayúsculas y cualquier carácter que no sea letra o número, y False en caso contrario. Devuelve únicamente el código dentro de un bloque ```python, sin explicaciones ni ejemplos de uso.",
+   "grader": {
+    "type": "code",
+    "function": "es_palindromo",
+    "tests": [
+     {
+      "args": [
+       "Anita lava la tina"
+      ],
+      "expected": true
+     },
+     {
+      "args": [
+       "Hola"
+      ],
+      "expected": false
+     },
+     {
+      "args": [
+       ""
+      ],
+      "expected": true
+     },
+     {
+      "args": [
+       "A man, a plan, a canal: Panama"
+      ],
+      "expected": true
+     },
+     {
+      "args": [
+       "12321"
+      ],
+      "expected": true
+     },
+     {
+      "args": [
+       "ab"
+      ],
+      "expected": false
+     }
+    ],
+    "timeout_s": 10
+   },
+   "expected": "Función es_palindromo que supera 6 casos de prueba ejecutados en un sandbox",
+   "params": {
+    "num_ctx": 4096,
+    "num_predict": 1024,
+    "temperature": 0,
+    "seed": 42
+   },
+   "reference": "def es_palindromo(texto):\n    s = [c.lower() for c in texto if c.isalnum()]\n    return s == s[::-1]\n"
+  },
+  {
+   "id": "code-002",
+   "category": "code",
+   "difficulty": "easy",
+   "language": "es",
+   "quick": false,
+   "prompt": "Escribe una función de Python llamada `suma_pares` que reciba una lista de enteros y devuelva la suma de los que son pares. Devuelve únicamente el código dentro de un bloque ```python, sin explicaciones ni ejemplos de uso.",
+   "grader": {
+    "type": "code",
+    "function": "suma_pares",
+    "tests": [
+     {
+      "args": [
+       [
+        1,
+        2,
+        3,
+        4
+       ]
+      ],
+      "expected": 6
+     },
+     {
+      "args": [
+       []
+      ],
+      "expected": 0
+     },
+     {
+      "args": [
+       [
+        1,
+        3,
+        5
+       ]
+      ],
+      "expected": 0
+     },
+     {
+      "args": [
+       [
+        2,
+        -4,
+        6
+       ]
+      ],
+      "expected": 4
+     }
+    ],
+    "timeout_s": 10
+   },
+   "expected": "Función suma_pares que supera 4 casos de prueba ejecutados en un sandbox",
+   "params": {
+    "num_ctx": 4096,
+    "num_predict": 1024,
+    "temperature": 0,
+    "seed": 42
+   },
+   "reference": "def suma_pares(numeros):\n    return sum(n for n in numeros if n % 2 == 0)\n"
+  },
+  {
+   "id": "code-003",
+   "category": "code",
+   "difficulty": "medium",
+   "language": "es",
+   "quick": true,
+   "prompt": "Escribe una función de Python llamada `fizzbuzz` que reciba un entero n y devuelva una lista de cadenas del 1 al n, donde cada múltiplo de 3 se reemplaza por 'Fizz', cada múltiplo de 5 por 'Buzz' y cada múltiplo de ambos por 'FizzBuzz'; los demás números se convierten a cadena. Devuelve únicamente el código dentro de un bloque ```python, sin explicaciones ni ejemplos de uso.",
+   "grader": {
+    "type": "code",
+    "function": "fizzbuzz",
+    "tests": [
+     {
+      "args": [
+       5
+      ],
+      "expected": [
+       "1",
+       "2",
+       "Fizz",
+       "4",
+       "Buzz"
+      ]
+     },
+     {
+      "args": [
+       0
+      ],
+      "expected": []
+     },
+     {
+      "args": [
+       15
+      ],
+      "expected": [
+       "1",
+       "2",
+       "Fizz",
+       "4",
+       "Buzz",
+       "Fizz",
+       "7",
+       "8",
+       "Fizz",
+       "Buzz",
+       "11",
+       "Fizz",
+       "13",
+       "14",
+       "FizzBuzz"
+      ]
+     },
+     {
+      "args": [
+       1
+      ],
+      "expected": [
+       "1"
+      ]
+     }
+    ],
+    "timeout_s": 10
+   },
+   "expected": "Función fizzbuzz que supera 4 casos de prueba ejecutados en un sandbox",
+   "params": {
+    "num_ctx": 4096,
+    "num_predict": 1024,
+    "temperature": 0,
+    "seed": 42
+   },
+   "reference": "def fizzbuzz(n):\n    out = []\n    for i in range(1, n + 1):\n        s = ('Fizz' if i % 3 == 0 else '') + ('Buzz' if i % 5 == 0 else '')\n        out.append(s or str(i))\n    return out\n"
+  },
+  {
+   "id": "code-004",
+   "category": "code",
+   "difficulty": "medium",
+   "language": "es",
+   "quick": false,
+   "prompt": "Escribe una función de Python llamada `contar_palabras` que reciba un texto y devuelva un diccionario con la cantidad de veces que aparece cada palabra. Las palabras están separadas por espacios, se comparan en minúsculas y las entradas no llevan signos de puntuación. Devuelve únicamente el código dentro de un bloque ```python, sin explicaciones ni ejemplos de uso.",
+   "grader": {
+    "type": "code",
+    "function": "contar_palabras",
+    "tests": [
+     {
+      "args": [
+       "a b a"
+      ],
+      "expected": {
+       "a": 2,
+       "b": 1
+      }
+     },
+     {
+      "args": [
+       "Hola hola HOLA"
+      ],
+      "expected": {
+       "hola": 3
+      }
+     },
+     {
+      "args": [
+       ""
+      ],
+      "expected": {}
+     },
+     {
+      "args": [
+       "uno dos tres dos"
+      ],
+      "expected": {
+       "uno": 1,
+       "dos": 2,
+       "tres": 1
+      }
+     }
+    ],
+    "timeout_s": 10
+   },
+   "expected": "Función contar_palabras que supera 4 casos de prueba ejecutados en un sandbox",
+   "params": {
+    "num_ctx": 4096,
+    "num_predict": 1024,
+    "temperature": 0,
+    "seed": 42
+   },
+   "reference": "def contar_palabras(texto):\n    d = {}\n    for w in texto.lower().split():\n        d[w] = d.get(w, 0) + 1\n    return d\n"
+  },
+  {
+   "id": "code-005",
+   "category": "code",
+   "difficulty": "medium",
+   "language": "es",
+   "quick": true,
+   "prompt": "Escribe una función de Python llamada `fibonacci` que reciba un entero n >= 0 y devuelva el n-ésimo número de Fibonacci, con fibonacci(0) = 0 y fibonacci(1) = 1. Debe ser eficiente: se probará con n = 50. Devuelve únicamente el código dentro de un bloque ```python, sin explicaciones ni ejemplos de uso.",
+   "grader": {
+    "type": "code",
+    "function": "fibonacci",
+    "tests": [
+     {
+      "args": [
+       0
+      ],
+      "expected": 0
+     },
+     {
+      "args": [
+       1
+      ],
+      "expected": 1
+     },
+     {
+      "args": [
+       2
+      ],
+      "expected": 1
+     },
+     {
+      "args": [
+       10
+      ],
+      "expected": 55
+     },
+     {
+      "args": [
+       50
+      ],
+      "expected": 12586269025
+     }
+    ],
+    "timeout_s": 10
+   },
+   "expected": "Función fibonacci que supera 5 casos de prueba ejecutados en un sandbox",
+   "params": {
+    "num_ctx": 4096,
+    "num_predict": 1024,
+    "temperature": 0,
+    "seed": 42
+   },
+   "reference": "def fibonacci(n):\n    a, b = 0, 1\n    for _ in range(n):\n        a, b = b, a + b\n    return a\n"
+  },
+  {
+   "id": "code-006",
+   "category": "code",
+   "difficulty": "hard",
+   "language": "es",
+   "quick": false,
+   "prompt": "Escribe una función de Python llamada `fusionar_intervalos` que reciba una lista de intervalos [inicio, fin] y devuelva la lista de intervalos fusionados, ordenada por inicio. Dos intervalos que se tocan en un extremo se fusionan. Devuelve únicamente el código dentro de un bloque ```python, sin explicaciones ni ejemplos de uso.",
+   "grader": {
+    "type": "code",
+    "function": "fusionar_intervalos",
+    "tests": [
+     {
+      "args": [
+       [
+        [
+         1,
+         3
+        ],
+        [
+         2,
+         6
+        ],
+        [
+         8,
+         10
+        ],
+        [
+         15,
+         18
+        ]
+       ]
+      ],
+      "expected": [
+       [
+        1,
+        6
+       ],
+       [
+        8,
+        10
+       ],
+       [
+        15,
+        18
+       ]
+      ]
+     },
+     {
+      "args": [
+       [
+        [
+         1,
+         4
+        ],
+        [
+         4,
+         5
+        ]
+       ]
+      ],
+      "expected": [
+       [
+        1,
+        5
+       ]
+      ]
+     },
+     {
+      "args": [
+       []
+      ],
+      "expected": []
+     },
+     {
+      "args": [
+       [
+        [
+         5,
+         6
+        ],
+        [
+         1,
+         2
+        ]
+       ]
+      ],
+      "expected": [
+       [
+        1,
+        2
+       ],
+       [
+        5,
+        6
+       ]
+      ]
+     }
+    ],
+    "timeout_s": 10
+   },
+   "expected": "Función fusionar_intervalos que supera 4 casos de prueba ejecutados en un sandbox",
+   "params": {
+    "num_ctx": 4096,
+    "num_predict": 1024,
+    "temperature": 0,
+    "seed": 42
+   },
+   "reference": "def fusionar_intervalos(intervalos):\n    out = []\n    for a, b in sorted(intervalos):\n        if out and a <= out[-1][1]:\n            out[-1][1] = max(out[-1][1], b)\n        else:\n            out.append([a, b])\n    return out\n"
+  },
+  {
+   "id": "code-007",
+   "category": "code",
+   "difficulty": "hard",
+   "language": "es",
+   "quick": true,
+   "prompt": "Escribe una función de Python llamada `romano_a_entero` que reciba un número romano válido (cadena en mayúsculas) y devuelva su valor entero. Devuelve únicamente el código dentro de un bloque ```python, sin explicaciones ni ejemplos de uso.",
+   "grader": {
+    "type": "code",
+    "function": "romano_a_entero",
+    "tests": [
+     {
+      "args": [
+       "III"
+      ],
+      "expected": 3
+     },
+     {
+      "args": [
+       "IX"
+      ],
+      "expected": 9
+     },
+     {
+      "args": [
+       "LVIII"
+      ],
+      "expected": 58
+     },
+     {
+      "args": [
+       "MCMXCIV"
+      ],
+      "expected": 1994
+     },
+     {
+      "args": [
+       "MMXXIV"
+      ],
+      "expected": 2024
+     }
+    ],
+    "timeout_s": 10
+   },
+   "expected": "Función romano_a_entero que supera 5 casos de prueba ejecutados en un sandbox",
+   "params": {
+    "num_ctx": 4096,
+    "num_predict": 1024,
+    "temperature": 0,
+    "seed": 42
+   },
+   "reference": "def romano_a_entero(s):\n    v = {'I': 1, 'V': 5, 'X': 10, 'L': 50, 'C': 100, 'D': 500, 'M': 1000}\n    t = 0\n    for i, c in enumerate(s):\n        if i + 1 < len(s) and v[c] < v[s[i + 1]]:\n            t -= v[c]\n        else:\n            t += v[c]\n    return t\n"
+  },
+  {
+   "id": "code-008",
+   "category": "code",
+   "difficulty": "hard",
+   "language": "es",
+   "quick": false,
+   "prompt": "Escribe una función de Python llamada `balanceado` que reciba un texto y devuelva True si todos los paréntesis (), corchetes [] y llaves {} están correctamente balanceados y anidados, ignorando cualquier otro carácter, y False en caso contrario. Devuelve únicamente el código dentro de un bloque ```python, sin explicaciones ni ejemplos de uso.",
+   "grader": {
+    "type": "code",
+    "function": "balanceado",
+    "tests": [
+     {
+      "args": [
+       "([]{})"
+      ],
+      "expected": true
+     },
+     {
+      "args": [
+       "([)]"
+      ],
+      "expected": false
+     },
+     {
+      "args": [
+       ""
+      ],
+      "expected": true
+     },
+     {
+      "args": [
+       "(("
+      ],
+      "expected": false
+     },
+     {
+      "args": [
+       "a(b)c"
+      ],
+      "expected": true
+     },
+     {
+      "args": [
+       "}{"
+      ],
+      "expected": false
+     }
+    ],
+    "timeout_s": 10
+   },
+   "expected": "Función balanceado que supera 6 casos de prueba ejecutados en un sandbox",
+   "params": {
+    "num_ctx": 4096,
+    "num_predict": 1024,
+    "temperature": 0,
+    "seed": 42
+   },
+   "reference": "def balanceado(texto):\n    pares = {')': '(', ']': '[', '}': '{'}\n    pila = []\n    for c in texto:\n        if c in '([{':\n            pila.append(c)\n        elif c in pares:\n            if not pila or pila.pop() != pares[c]:\n                return False\n    return not pila\n"
+  },
+  {
+   "id": "reading-001",
+   "category": "reading",
+   "difficulty": "easy",
+   "language": "es",
+   "quick": true,
+   "prompt": "Texto: «María trabaja en una panadería desde 2019. Cada mañana llega a las 5:30 y prepara el pan antes de abrir a las 7:00. Los sábados cierra al mediodía.»\nPregunta: ¿A qué hora llega María a la panadería? Responde solo con la hora en formato HH:MM.",
+   "grader": {
+    "type": "exact",
+    "expected": [
+     "05:30",
+     "5:30"
+    ]
+   },
+   "expected": "05:30",
+   "params": {
+    "num_ctx": 4096,
+    "num_predict": 384,
+    "temperature": 0,
+    "seed": 42
+   }
+  },
+  {
+   "id": "reading-002",
+   "category": "reading",
+   "difficulty": "easy",
+   "language": "en",
+   "quick": false,
+   "prompt": "Text: \"The museum opens at 9 a.m. on weekdays and at 10 a.m. on weekends. Tickets cost 12 dollars for adults and 6 dollars for children. On the first Sunday of each month, entry is free.\"\nQuestion: How much does a child's ticket cost? Answer with only the number.",
+   "grader": {
+    "type": "number",
+    "expected": 6
+   },
+   "expected": "6",
+   "params": {
+    "num_ctx": 4096,
+    "num_predict": 384,
+    "temperature": 0,
+    "seed": 42
+   }
+  },
+  {
+   "id": "reading-003",
+   "category": "reading",
+   "difficulty": "medium",
+   "language": "es",
+   "quick": true,
+   "prompt": "Texto: «La biblioteca tiene tres salas abiertas al público. La sala de novelas guarda 120 libros, la de ciencia 85 y la infantil 140. La sala de referencia, cerrada al público, no se cuenta en el inventario.»\nPregunta: ¿Cuántos libros hay en total en las salas abiertas al público? Responde solo con el número.",
+   "grader": {
+    "type": "number",
+    "expected": 345
+   },
+   "expected": "345",
+   "params": {
+    "num_ctx": 4096,
+    "num_predict": 384,
+    "temperature": 0,
+    "seed": 42
+   }
+  },
+  {
+   "id": "reading-004",
+   "category": "reading",
+   "difficulty": "medium",
+   "language": "en",
+   "quick": false,
+   "prompt": "Text: \"Tom said he would call after dinner. Dinner at his house usually ends around 8 p.m. At 7 p.m. Tom was still at the office.\"\nQuestion: Was Tom at home at 7 p.m.? Answer only Yes or No.",
+   "grader": {
+    "type": "candidates",
+    "candidates": [
+     "yes",
+     "no"
+    ],
+    "expected": "no"
+   },
+   "expected": "No",
+   "params": {
+    "num_ctx": 4096,
+    "num_predict": 384,
+    "temperature": 0,
+    "seed": 42
+   }
+  },
+  {
+   "id": "reading-005",
+   "category": "reading",
+   "difficulty": "medium",
+   "language": "es",
+   "quick": false,
+   "prompt": "Texto: «En el informe, las ventas del primer trimestre fueron de 40 mil euros, las del segundo de 52 mil y las del tercero de 47 mil. El cuarto trimestre aún no se ha cerrado.»\nPregunta: ¿En qué trimestre se registraron las mayores ventas del informe? Responde solo con el número del trimestre.",
+   "grader": {
+    "type": "number",
+    "expected": 2
+   },
+   "expected": "2",
+   "params": {
+    "num_ctx": 4096,
+    "num_predict": 384,
+    "temperature": 0,
+    "seed": 42
+   }
+  },
+  {
+   "id": "reading-006",
+   "category": "reading",
+   "difficulty": "hard",
+   "language": "es",
+   "quick": true,
+   "prompt": "Texto: «El contrato original fijaba la entrega para el 10 de marzo. Una enmienda posterior la movió 15 días más tarde. Finalmente, el cliente pidió adelantarla 5 días respecto a la fecha de la enmienda.»\nPregunta: ¿Cuál es la fecha de entrega final? Responde solo con el día y el mes, por ejemplo «1 de enero».",
+   "grader": {
+    "type": "regex",
+    "pattern": "\\b20 de marzo\\b",
+    "flags": "i"
+   },
+   "expected": "20 de marzo",
+   "params": {
+    "num_ctx": 4096,
+    "num_predict": 384,
+    "temperature": 0,
+    "seed": 42
+   }
+  },
+  {
+   "id": "reading-007",
+   "category": "reading",
+   "difficulty": "hard",
+   "language": "en",
+   "quick": false,
+   "prompt": "Text: \"Clara, Omar and Lena shared a prize of 90 euros. Clara received twice as much as Omar, and Lena received 10 euros less than Clara.\"\nQuestion: How much did Omar receive? Answer with only the number.",
+   "grader": {
+    "type": "number",
+    "expected": 20
+   },
+   "expected": "20",
+   "params": {
+    "num_ctx": 4096,
+    "num_predict": 384,
+    "temperature": 0,
+    "seed": 42
+   }
+  },
+  {
+   "id": "reading-008",
+   "category": "reading",
+   "difficulty": "medium",
+   "language": "es",
+   "quick": false,
+   "prompt": "Texto: «El tren con destino a Valencia sale del andén 3 a las 14:20. El tren a Sevilla sale del andén 5 a las 14:35 y el de Bilbao, del andén 2 a las 14:50.»\nPregunta: ¿De qué andén sale el tren a Sevilla? Responde solo con el número.",
+   "grader": {
+    "type": "number",
+    "expected": 5
+   },
+   "expected": "5",
+   "params": {
+    "num_ctx": 4096,
+    "num_predict": 384,
+    "temperature": 0,
+    "seed": 42
+   }
+  },
+  {
+   "id": "instr-001",
+   "category": "instructions",
+   "difficulty": "easy",
+   "language": "es",
+   "quick": true,
+   "prompt": "Responde exactamente con la palabra OK en mayúsculas y nada más.",
+   "grader": {
+    "type": "exact",
+    "expected": "OK",
+    "case_sensitive": true
+   },
+   "expected": "OK",
+   "params": {
+    "num_ctx": 4096,
+    "num_predict": 384,
+    "temperature": 0,
+    "seed": 42
+   }
+  },
+  {
+   "id": "instr-002",
+   "category": "instructions",
+   "difficulty": "easy",
+   "language": "es",
+   "quick": false,
+   "prompt": "Escribe una sola frase de entre 8 y 12 palabras sobre el mar. No uses la letra «z».",
+   "grader": {
+    "type": "checks",
+    "checks": [
+     {
+      "type": "words",
+      "min": 8,
+      "max": 12
+     },
+     {
+      "type": "forbidden_chars",
+      "chars": [
+       "z"
+      ]
+     },
+     {
+      "type": "sentences",
+      "count": 1
+     }
+    ]
+   },
+   "expected": "Una frase de 8 a 12 palabras sin la letra z",
+   "params": {
+    "num_ctx": 4096,
+    "num_predict": 384,
+    "temperature": 0,
+    "seed": 42
+   }
+  },
+  {
+   "id": "instr-003",
+   "category": "instructions",
+   "difficulty": "medium",
+   "language": "es",
+   "quick": true,
+   "prompt": "Enumera exactamente tres frutas, una por línea, sin numeración ni viñetas y sin ningún otro texto.",
+   "grader": {
+    "type": "checks",
+    "checks": [
+     {
+      "type": "lines",
+      "count": 3
+     },
+     {
+      "type": "no_list_markers"
+     },
+     {
+      "type": "words",
+      "max": 6
+     }
+    ]
+   },
+   "expected": "Tres líneas, una fruta cada una, sin viñetas",
+   "params": {
+    "num_ctx": 4096,
+    "num_predict": 384,
+    "temperature": 0,
+    "seed": 42
+   }
+  },
+  {
+   "id": "instr-004",
+   "category": "instructions",
+   "difficulty": "medium",
+   "language": "es",
+   "quick": false,
+   "prompt": "Escribe exactamente dos párrafos separados por una línea en blanco. El primero debe contener la palabra «río» y el segundo la palabra «montaña».",
+   "grader": {
+    "type": "checks",
+    "checks": [
+     {
+      "type": "paragraphs",
+      "count": 2
+     },
+     {
+      "type": "paragraph_contains",
+      "index": 0,
+      "words": [
+       "río"
+      ]
+     },
+     {
+      "type": "paragraph_contains",
+      "index": 1,
+      "words": [
+       "montaña"
+      ]
+     }
+    ]
+   },
+   "expected": "Dos párrafos; el primero con «río» y el segundo con «montaña»",
+   "params": {
+    "num_ctx": 4096,
+    "num_predict": 384,
+    "temperature": 0,
+    "seed": 42
+   }
+  },
+  {
+   "id": "instr-005",
+   "category": "instructions",
+   "difficulty": "medium",
+   "language": "es",
+   "quick": true,
+   "prompt": "Responde en MAYÚSCULAS y con un máximo de 15 palabras: ¿por qué el cielo es azul?",
+   "grader": {
+    "type": "checks",
+    "checks": [
+     {
+      "type": "uppercase"
+     },
+     {
+      "type": "words",
+      "min": 3,
+      "max": 15
+     }
+    ]
+   },
+   "expected": "Respuesta toda en mayúsculas, de 3 a 15 palabras",
+   "params": {
+    "num_ctx": 4096,
+    "num_predict": 384,
+    "temperature": 0,
+    "seed": 42
+   }
+  },
+  {
+   "id": "instr-006",
+   "category": "instructions",
+   "difficulty": "hard",
+   "language": "es",
+   "quick": true,
+   "prompt": "Escribe un poema de exactamente 4 versos, uno por línea. Cada verso debe terminar con la letra «s» y no puedes usar la palabra «amor».",
+   "grader": {
+    "type": "checks",
+    "checks": [
+     {
+      "type": "lines",
+      "count": 4
+     },
+     {
+      "type": "line_regex",
+      "pattern": "[sS]\\W*$"
+     },
+     {
+      "type": "forbidden_words",
+      "words": [
+       "amor"
+      ]
+     },
+     {
+      "type": "no_list_markers"
+     }
+    ]
+   },
+   "expected": "4 versos que terminan en 's' sin la palabra amor",
+   "params": {
+    "num_ctx": 4096,
+    "num_predict": 384,
+    "temperature": 0,
+    "seed": 42
+   }
+  },
+  {
+   "id": "instr-007",
+   "category": "instructions",
+   "difficulty": "hard",
+   "language": "es",
+   "quick": false,
+   "prompt": "Escribe los números del 5 al 1 en orden descendente, separados por comas y sin espacios, y nada más.",
+   "grader": {
+    "type": "exact",
+    "expected": "5,4,3,2,1",
+    "case_sensitive": true
+   },
+   "expected": "5,4,3,2,1",
+   "params": {
+    "num_ctx": 4096,
+    "num_predict": 384,
+    "temperature": 0,
+    "seed": 42
+   }
+  },
+  {
+   "id": "instr-008",
+   "category": "instructions",
+   "difficulty": "medium",
+   "language": "es",
+   "quick": false,
+   "prompt": "Explica en una sola frase corta qué es un átomo y termina tu respuesta con la frase exacta: FIN.",
+   "grader": {
+    "type": "checks",
+    "checks": [
+     {
+      "type": "ends_with",
+      "text": "FIN."
+     },
+     {
+      "type": "words",
+      "max": 40
+     },
+     {
+      "type": "lines",
+      "count": 1
+     }
+    ]
+   },
+   "expected": "Una frase que termina exactamente con «FIN.»",
+   "params": {
+    "num_ctx": 4096,
+    "num_predict": 384,
+    "temperature": 0,
+    "seed": 42
+   }
+  },
+  {
+   "id": "format-001",
+   "category": "format",
+   "difficulty": "easy",
+   "language": "es",
+   "quick": true,
+   "prompt": "Devuelve únicamente un objeto JSON con las claves \"nombre\" (cadena) y \"edad\" (entero) para esta persona: Lucía tiene 29 años.",
+   "grader": {
+    "type": "json",
+    "schema": {
+     "type": "object",
+     "required": [
+      "nombre",
+      "edad"
+     ],
+     "additionalProperties": false,
+     "properties": {
+      "nombre": {
+       "type": "string"
+      },
+      "edad": {
+       "type": "integer"
+      }
+     }
+    },
+    "equals": {
+     "nombre": "Lucía",
+     "edad": 29
+    }
+   },
+   "expected": "{\"nombre\": \"Lucía\", \"edad\": 29}",
+   "params": {
+    "num_ctx": 4096,
+    "num_predict": 384,
+    "temperature": 0,
+    "seed": 42
+   }
+  },
+  {
+   "id": "format-002",
+   "category": "format",
+   "difficulty": "medium",
+   "language": "es",
+   "quick": true,
+   "prompt": "Devuelve únicamente un array JSON con exactamente tres objetos; cada objeto tiene \"planeta\" (cadena) y \"lunas\" (entero). Usa estos datos: Tierra tiene 1 luna, Marte 2 lunas y Júpiter 95 lunas, en ese orden.",
+   "grader": {
+    "type": "json",
+    "schema": {
+     "type": "array",
+     "minItems": 3,
+     "maxItems": 3,
+     "items": {
+      "type": "object",
+      "required": [
+       "planeta",
+       "lunas"
+      ],
+      "properties": {
+       "planeta": {
+        "type": "string"
+       },
+       "lunas": {
+        "type": "integer"
+       }
+      }
+     }
+    },
+    "equals": {
+     "0.planeta": "Tierra",
+     "0.lunas": 1,
+     "1.planeta": "Marte",
+     "1.lunas": 2,
+     "2.planeta": "Júpiter",
+     "2.lunas": 95
+    }
+   },
+   "expected": "Array de 3 objetos con los datos dados",
+   "params": {
+    "num_ctx": 4096,
+    "num_predict": 384,
+    "temperature": 0,
+    "seed": 42
+   }
+  },
+  {
+   "id": "format-003",
+   "category": "format",
+   "difficulty": "medium",
+   "language": "es",
+   "quick": false,
+   "prompt": "Convierte estos datos a JSON y devuelve solo el JSON: producto Silla, precio 49.9, stock 12, etiquetas rojo y madera. Claves: producto, precio (número), stock (entero), etiquetas (lista de cadenas).",
+   "grader": {
+    "type": "json",
+    "schema": {
+     "type": "object",
+     "required": [
+      "producto",
+      "precio",
+      "stock",
+      "etiquetas"
+     ],
+     "additionalProperties": false,
+     "properties": {
+      "producto": {
+       "type": "string"
+      },
+      "precio": {
+       "type": "number"
+      },
+      "stock": {
+       "type": "integer"
+      },
+      "etiquetas": {
+       "type": "array",
+       "items": {
+        "type": "string"
+       }
+      }
+     }
+    },
+    "equals": {
+     "producto": "Silla",
+     "precio": 49.9,
+     "stock": 12,
+     "etiquetas": [
+      "rojo",
+      "madera"
+     ]
+    }
+   },
+   "expected": "Objeto con producto, precio, stock y etiquetas",
+   "params": {
+    "num_ctx": 4096,
+    "num_predict": 384,
+    "temperature": 0,
+    "seed": 42
+   }
+  },
+  {
+   "id": "format-004",
+   "category": "format",
+   "difficulty": "hard",
+   "language": "es",
+   "quick": true,
+   "prompt": "Clasifica el sentimiento de estas tres reseñas y devuelve solo un JSON con la forma {\"resenas\": [{\"id\": 1, \"sentimiento\": \"...\"}, ...]}. El sentimiento solo puede ser \"positivo\", \"negativo\" o \"neutro\".\n1. «Excelente servicio, volvería sin dudarlo.»\n2. «Tardaron una hora y la comida llegó fría.»\n3. «El local abre de lunes a viernes.»",
+   "grader": {
+    "type": "json",
+    "schema": {
+     "type": "object",
+     "required": [
+      "resenas"
+     ],
+     "properties": {
+      "resenas": {
+       "type": "array",
+       "minItems": 3,
+       "maxItems": 3,
+       "items": {
+        "type": "object",
+        "required": [
+         "id",
+         "sentimiento"
+        ],
+        "properties": {
+         "id": {
+          "type": "integer"
+         },
+         "sentimiento": {
+          "type": "string",
+          "enum": [
+           "positivo",
+           "negativo",
+           "neutro"
+          ]
+         }
+        }
+       }
+      }
+     }
+    },
+    "equals": {
+     "resenas.0.id": 1,
+     "resenas.0.sentimiento": "positivo",
+     "resenas.1.id": 2,
+     "resenas.1.sentimiento": "negativo",
+     "resenas.2.id": 3,
+     "resenas.2.sentimiento": "neutro"
+    }
+   },
+   "expected": "Positivo, negativo, neutro en ese orden",
+   "params": {
+    "num_ctx": 4096,
+    "num_predict": 384,
+    "temperature": 0,
+    "seed": 42
+   }
+  },
+  {
+   "id": "format-005",
+   "category": "format",
+   "difficulty": "easy",
+   "language": "es",
+   "quick": false,
+   "prompt": "Devuelve únicamente un CSV con la cabecera «nombre,edad» y dos filas: Ana,31 y Luis,28. Sin comillas ni texto adicional.",
+   "grader": {
+    "type": "lines_equal",
+    "lines": [
+     "nombre,edad",
+     "Ana,31",
+     "Luis,28"
+    ]
+   },
+   "expected": "nombre,edad / Ana,31 / Luis,28",
+   "params": {
+    "num_ctx": 4096,
+    "num_predict": 384,
+    "temperature": 0,
+    "seed": 42
+   }
+  },
+  {
+   "id": "format-006",
+   "category": "format",
+   "difficulty": "medium",
+   "language": "es",
+   "quick": false,
+   "prompt": "Devuelve únicamente una tabla en Markdown con las columnas Lenguaje y Año, y tres filas: Python 1991, Java 1995 y Go 2009.",
+   "grader": {
+    "type": "table_md",
+    "header": [
+     "Lenguaje",
+     "Año"
+    ],
+    "rows": [
+     [
+      "Python",
+      "1991"
+     ],
+     [
+      "Java",
+      "1995"
+     ],
+     [
+      "Go",
+      "2009"
+     ]
+    ]
+   },
+   "expected": "Tabla Markdown de 2 columnas y 3 filas",
+   "params": {
+    "num_ctx": 4096,
+    "num_predict": 384,
+    "temperature": 0,
+    "seed": 42
+   }
+  },
+  {
+   "id": "format-007",
+   "category": "format",
+   "difficulty": "hard",
+   "language": "es",
+   "quick": false,
+   "prompt": "Ordena alfabéticamente (de la A a la Z) estas palabras y devuelve solo un array JSON de cadenas: pera, manzana, uva, banano, cereza.",
+   "grader": {
+    "type": "json",
+    "schema": {
+     "type": "array",
+     "minItems": 5,
+     "maxItems": 5,
+     "items": {
+      "type": "string"
+     }
+    },
+    "equals": {
+     "$": [
+      "banano",
+      "cereza",
+      "manzana",
+      "pera",
+      "uva"
+     ]
+    }
+   },
+   "expected": "[\"banano\",\"cereza\",\"manzana\",\"pera\",\"uva\"]",
+   "params": {
+    "num_ctx": 4096,
+    "num_predict": 384,
+    "temperature": 0,
+    "seed": 42
+   }
+  },
+  {
+   "id": "lang-001",
+   "category": "language",
+   "difficulty": "easy",
+   "language": "es",
+   "quick": true,
+   "prompt": "Traduce al inglés: «El perro corre por el parque.» Responde solo con la traducción.",
+   "grader": {
+    "type": "all",
+    "graders": [
+     {
+      "type": "contains_any",
+      "expected": [
+       "the dog runs in the park",
+       "the dog is running in the park",
+       "the dog runs through the park",
+       "the dog is running through the park",
+       "the dog runs around the park",
+       "the dog is running around the park",
+       "the dog runs across the park"
+      ]
+     },
+     {
+      "type": "checks",
+      "checks": [
+       {
+        "type": "language",
+        "lang": "en",
+        "min_words": 4
+       }
+      ]
+     }
+    ]
+   },
+   "expected": "The dog runs in the park.",
+   "params": {
+    "num_ctx": 4096,
+    "num_predict": 384,
+    "temperature": 0,
+    "seed": 42
+   }
+  },
+  {
+   "id": "lang-002",
+   "category": "language",
+   "difficulty": "easy",
+   "language": "en",
+   "quick": false,
+   "prompt": "Translate into Spanish: \"The book is on the table.\" Answer with the translation only.",
+   "grader": {
+    "type": "all",
+    "graders": [
+     {
+      "type": "contains_any",
+      "expected": [
+       "el libro esta en la mesa",
+       "el libro esta sobre la mesa",
+       "el libro esta encima de la mesa"
+      ]
+     },
+     {
+      "type": "checks",
+      "checks": [
+       {
+        "type": "language",
+        "lang": "es",
+        "min_words": 4
+       }
+      ]
+     }
+    ]
+   },
+   "expected": "El libro está en la mesa.",
+   "params": {
+    "num_ctx": 4096,
+    "num_predict": 384,
+    "temperature": 0,
+    "seed": 42
+   }
+  },
+  {
+   "id": "lang-003",
+   "category": "language",
+   "difficulty": "easy",
+   "language": "es",
+   "quick": true,
+   "prompt": "¿Cuál es la capital de Francia? Responde en una frase completa en español.",
+   "grader": {
+    "type": "all",
+    "graders": [
+     {
+      "type": "contains_any",
+      "expected": [
+       "paris"
+      ]
+     },
+     {
+      "type": "checks",
+      "checks": [
+       {
+        "type": "language",
+        "lang": "es",
+        "min_words": 4
+       }
+      ]
+     }
+    ]
+   },
+   "expected": "París (en español)",
+   "params": {
+    "num_ctx": 4096,
+    "num_predict": 384,
+    "temperature": 0,
+    "seed": 42
+   }
+  },
+  {
+   "id": "lang-004",
+   "category": "language",
+   "difficulty": "easy",
+   "language": "en",
+   "quick": false,
+   "prompt": "What is the largest planet in our solar system? Answer in one complete English sentence.",
+   "grader": {
+    "type": "all",
+    "graders": [
+     {
+      "type": "contains_any",
+      "expected": [
+       "jupiter"
+      ]
+     },
+     {
+      "type": "checks",
+      "checks": [
+       {
+        "type": "language",
+        "lang": "en",
+        "min_words": 4
+       }
+      ]
+     }
+    ]
+   },
+   "expected": "Jupiter (in English)",
+   "params": {
+    "num_ctx": 4096,
+    "num_predict": 384,
+    "temperature": 0,
+    "seed": 42
+   }
+  },
+  {
+   "id": "lang-005",
+   "category": "language",
+   "difficulty": "medium",
+   "language": "es",
+   "quick": true,
+   "prompt": "Responde en inglés: ¿cuántos días tiene una semana? Una frase corta.",
+   "grader": {
+    "type": "all",
+    "graders": [
+     {
+      "type": "contains_any",
+      "expected": [
+       "seven",
+       "7"
+      ]
+     },
+     {
+      "type": "checks",
+      "checks": [
+       {
+        "type": "language",
+        "lang": "en",
+        "min_words": 3
+       }
+      ]
+     }
+    ]
+   },
+   "expected": "Seven days (in English)",
+   "params": {
+    "num_ctx": 4096,
+    "num_predict": 384,
+    "temperature": 0,
+    "seed": 42
+   }
+  },
+  {
+   "id": "lang-006",
+   "category": "language",
+   "difficulty": "medium",
+   "language": "es",
+   "quick": false,
+   "prompt": "Corrige la ortografía de esta frase y devuelve solo la frase corregida: «Ayer fuimos a la playa y nos vimos mui cansados».",
+   "grader": {
+    "type": "all",
+    "graders": [
+     {
+      "type": "contains_all",
+      "expected": [
+       "muy cansados"
+      ]
+     },
+     {
+      "type": "not_contains",
+      "expected": [
+       "mui"
+      ]
+     }
+    ]
+   },
+   "expected": "Ayer fuimos a la playa y nos vimos muy cansados.",
+   "params": {
+    "num_ctx": 4096,
+    "num_predict": 384,
+    "temperature": 0,
+    "seed": 42
+   }
+  },
+  {
+   "id": "lang-007",
+   "category": "language",
+   "difficulty": "hard",
+   "language": "es",
+   "quick": false,
+   "prompt": "Escribe el plural de «lápiz» y el plural de «canción». Responde solo con las dos palabras separadas por una coma.",
+   "grader": {
+    "type": "exact",
+    "expected": "lapices,canciones",
+    "strip_spaces": true
+   },
+   "expected": "lápices,canciones",
+   "params": {
+    "num_ctx": 4096,
+    "num_predict": 384,
+    "temperature": 0,
+    "seed": 42
+   }
+  },
+  {
+   "id": "lang-008",
+   "category": "language",
+   "difficulty": "hard",
+   "language": "es",
+   "quick": true,
+   "prompt": "Resume en inglés, en una sola frase de máximo 20 palabras: «La ciudad inauguró un nuevo parque con juegos infantiles, zonas verdes y un carril bici que conecta el centro con la universidad.»",
+   "grader": {
+    "type": "all",
+    "graders": [
+     {
+      "type": "checks",
+      "checks": [
+       {
+        "type": "language",
+        "lang": "en",
+        "min_words": 4
+       },
+       {
+        "type": "words",
+        "max": 20
+       },
+       {
+        "type": "lines",
+        "count": 1
+       },
+       {
+        "type": "sentences",
+        "count": 1
+       }
+      ]
+     },
+     {
+      "type": "contains_any",
+      "expected": [
+       "park"
+      ]
+     }
+    ]
+   },
+   "expected": "Una frase en inglés de hasta 20 palabras que menciona el parque",
+   "params": {
+    "num_ctx": 4096,
+    "num_predict": 384,
+    "temperature": 0,
+    "seed": 42
+   }
+  },
+  {
+   "id": "speed-001",
+   "category": "speed",
+   "difficulty": "easy",
+   "language": "es",
+   "quick": true,
+   "prompt": "Escribe un texto de aproximadamente 150 palabras sobre la importancia del agua para la vida.",
+   "grader": {
+    "type": "checks",
+    "checks": [
+     {
+      "type": "words",
+      "min": 90,
+      "max": 260
+     }
+    ]
+   },
+   "expected": "Texto de 90 a 260 palabras",
+   "params": {
+    "num_ctx": 4096,
+    "num_predict": 450,
+    "temperature": 0,
+    "seed": 42
+   }
+  },
+  {
+   "id": "speed-002",
+   "category": "speed",
+   "difficulty": "medium",
+   "language": "es",
+   "quick": false,
+   "prompt": "Escribe un cuento breve, de unas 200 palabras, sobre un faro abandonado.",
+   "grader": {
+    "type": "checks",
+    "checks": [
+     {
+      "type": "words",
+      "min": 120,
+      "max": 330
+     }
+    ]
+   },
+   "expected": "Texto de 120 a 330 palabras",
+   "params": {
+    "num_ctx": 4096,
+    "num_predict": 450,
+    "temperature": 0,
+    "seed": 42
+   }
+  },
+  {
+   "id": "speed-003",
+   "category": "speed",
+   "difficulty": "medium",
+   "language": "en",
+   "quick": false,
+   "prompt": "Write about 150 words explaining how a refrigerator works.",
+   "grader": {
+    "type": "checks",
+    "checks": [
+     {
+      "type": "words",
+      "min": 90,
+      "max": 260
+     },
+     {
+      "type": "language",
+      "lang": "en",
+      "min_words": 20
+     }
+    ]
+   },
+   "expected": "Text of 90 to 260 words, in English",
+   "params": {
+    "num_ctx": 4096,
+    "num_predict": 450,
+    "temperature": 0,
+    "seed": 42
+   }
+  },
+  {
+   "id": "ctx-needle-start-es",
+   "category": "context",
+   "difficulty": "easy",
+   "language": "es",
+   "quick": false,
+   "prompt": "(generado)",
+   "grader": {
+    "type": "contains_any",
+    "expected": "__CODIGO__",
+    "case_sensitive": true
+   },
+   "expected": "El código secreto de 6 caracteres escondido en el texto (posición 5 %)",
+   "params": {
+    "num_ctx": 4096,
+    "num_predict": 64,
+    "temperature": 0,
+    "seed": 42
+   },
+   "generator": {
+    "type": "needle",
+    "position": 0.05,
+    "language": "es"
+   },
+   "context_sized": true
+  },
+  {
+   "id": "ctx-needle-middle-es",
+   "category": "context",
+   "difficulty": "medium",
+   "language": "es",
+   "quick": true,
+   "prompt": "(generado)",
+   "grader": {
+    "type": "contains_any",
+    "expected": "__CODIGO__",
+    "case_sensitive": true
+   },
+   "expected": "El código secreto de 6 caracteres escondido en el texto (posición 50 %)",
+   "params": {
+    "num_ctx": 4096,
+    "num_predict": 64,
+    "temperature": 0,
+    "seed": 42
+   },
+   "generator": {
+    "type": "needle",
+    "position": 0.5,
+    "language": "es"
+   },
+   "context_sized": true
+  },
+  {
+   "id": "ctx-needle-end-es",
+   "category": "context",
+   "difficulty": "easy",
+   "language": "es",
+   "quick": false,
+   "prompt": "(generado)",
+   "grader": {
+    "type": "contains_any",
+    "expected": "__CODIGO__",
+    "case_sensitive": true
+   },
+   "expected": "El código secreto de 6 caracteres escondido en el texto (posición 95 %)",
+   "params": {
+    "num_ctx": 4096,
+    "num_predict": 64,
+    "temperature": 0,
+    "seed": 42
+   },
+   "generator": {
+    "type": "needle",
+    "position": 0.95,
+    "language": "es"
+   },
+   "context_sized": true
+  },
+  {
+   "id": "ctx-needle-middle-en",
+   "category": "context",
+   "difficulty": "medium",
+   "language": "en",
+   "quick": false,
+   "prompt": "(generado)",
+   "grader": {
+    "type": "contains_any",
+    "expected": "__CODIGO__",
+    "case_sensitive": true
+   },
+   "expected": "El código secreto de 6 caracteres escondido en el texto (posición 50 %)",
+   "params": {
+    "num_ctx": 4096,
+    "num_predict": 64,
+    "temperature": 0,
+    "seed": 42
+   },
+   "generator": {
+    "type": "needle",
+    "position": 0.5,
+    "language": "en"
+   },
+   "context_sized": true
+  }
+ ]
+}
