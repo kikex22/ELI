@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ELI</title>
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<header>
+  <div class="brand"><strong>ELI</strong><span>Evaluation Lab for Inference</span></div>
+  <div class="controls">
+    <label>Modelo <select id="model"></select></label>
+    <button id="refresh" type="button">Actualizar</button>
+    <button id="unload" type="button" title="Libera la VRAM descargando los modelos de Ollama">Descargar modelos</button>
+  </div>
+</header>
+
+<main>
+  <div id="banner" class="banner" hidden></div>
+
+  <section class="card" aria-labelledby="gia-title">
+    <h2 id="gia-title">GIA · GPU <span class="sub" id="gia-status">conectando…</span></h2>
+    <div class="tiles">
+      <div class="tile"><div class="tile-head"><span class="tile-title">VRAM</span><span class="tile-value" id="val-vram">—</span></div><canvas id="c-vram" aria-label="VRAM en los últimos 2 minutos"></canvas></div>
+      <div class="tile"><div class="tile-head"><span class="tile-title">Uso de GPU</span><span class="tile-value" id="val-util">—</span></div><canvas id="c-util" aria-label="Uso de la GPU en los últimos 2 minutos"></canvas></div>
+      <div class="tile"><div class="tile-head"><span class="tile-title">Consumo</span><span class="tile-value" id="val-power">—</span></div><canvas id="c-power" aria-label="Consumo en vatios en los últimos 2 minutos"></canvas></div>
+      <div class="tile"><div class="tile-head"><span class="tile-title">Temperatura</span><span class="tile-value" id="val-temp">—</span></div><canvas id="c-temp" aria-label="Temperatura en los últimos 2 minutos"></canvas></div>
+    </div>
+    <div class="chips" id="chips"></div>
+    <div class="procs" id="procs"></div>
+  </section>
+
+  <div class="body">
+    <div class="side">
+      <section class="card" aria-labelledby="ficha-title">
+        <h2 id="ficha-title">Ficha del modelo</h2>
+        <dl class="facts" id="ficha"><dt>Modelo</dt><dd>—</dd></dl>
+      </section>
+      <section class="card" aria-labelledby="ajustes-title">
+        <h2 id="ajustes-title">Ajustes</h2>
+        <div class="settings">
+          <label title="Tokens de contexto que Ollama reserva. Si el prompt no cabe, lo recorta sin avisar.">Contexto (num_ctx)<input id="s-ctx" type="number" min="512" max="262144" step="512"></label>
+          <label>Temperatura<input id="s-temp" type="number" min="0" max="2" step="0.1"></label>
+          <label title="Misma semilla y temperatura 0 dan respuestas repetibles.">Semilla<input id="s-seed" type="number" min="0" step="1"></label>
+          <label>Tokens máximos<input id="s-max" type="number" min="1" max="32768" step="64"></label>
+          <label id="think-row" hidden>Razonamiento
+            <select id="s-think"><option value="">Por defecto</option><option value="true">Activado</option><option value="false">Desactivado</option></select>
+          </label>
+          <label class="wide">Mensaje de sistema (opcional)<textarea id="s-system" placeholder="Instrucciones fijas para el modelo"></textarea></label>
+          <div class="hint">Cada respuesta usa estos ajustes y se guarda en la carpeta runs/.</div>
+        </div>
+      </section>
+    </div>
+
+    <section class="card" aria-labelledby="chat-title">
+      <h2 id="chat-title">Chat con métricas</h2>
+      <div id="log" role="log" aria-live="polite"></div>
+      <form id="chat">
+        <textarea id="prompt" placeholder="Escribe un mensaje. Enter envía, Shift+Enter hace un salto de línea." aria-label="Mensaje"></textarea>
+        <div class="row">
+          <button id="send" class="primary" type="submit">Enviar</button>
+          <button id="stop" type="button" hidden>Detener</button>
+          <button id="reset" type="button" title="Borra la conversación (el contexto vuelve a empezar)">Nueva conversación</button>
+        </div>
+      </form>
+    </section>
+  </div>
+</main>
+<script src="/app.js"></script>
+</body>
+</html>
