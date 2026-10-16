@@ -13,6 +13,7 @@
     <button type="button" data-nav="dashboard">Dashboard</button>
     <button type="button" data-nav="models">Models</button>
     <button type="button" data-nav="benchmark">Benchmark<span class="dot" id="bench-dot" hidden title="Hay una evaluación en curso"></span></button>
+    <button type="button" data-nav="embeddings">Embeddings<span class="dot" id="emb-dot" hidden title="Hay una evaluación de embeddings en curso"></span></button>
     <button type="button" data-nav="compare">Compare</button>
     <button type="button" data-nav="history">History</button>
     <button type="button" data-nav="chat">Chat</button>
@@ -101,6 +102,39 @@
     </div>
   </section>
 
+  <!-- EMBEDDINGS -->
+  <section data-view="embeddings" class="darkview" hidden>
+    <div class="card">
+      <h2>Evaluación de embeddings <span class="sub" id="emb-suite"></span></h2>
+      <div class="emb-controls">
+        <fieldset><legend>Modelos</legend><div id="emb-models" class="checklist small"></div></fieldset>
+        <div class="settings">
+          <label>Prefijos de tarea<select id="emb-prefixes"><option value="none">Sin prefijos</option><option value="task">Los que pide el modelo</option></select></label>
+          <label>Repeticiones (rendimiento)<input id="emb-reps" type="number" min="1" max="30" value="5"></label>
+          <label title="Carpeta con tus archivos. Documentos: .md/.txt (consulta = título de sección). Código: .py .cpp .h .cu .cmake (consulta = comentario o docstring de cada función, quitado del fragmento).">Carpeta propia (opcional)<input id="emb-folder" type="text" placeholder="/ruta/a/tu/proyecto"></label>
+          <label>Qué indexar<select id="emb-corpus-mode"><option value="docs">Documentos (.md, .txt)</option><option value="code">Código fuente</option><option value="both">Documentos y código</option></select></label>
+          <label title="Un LLM local escribe subpreguntas de cada pregunta de varios archivos, sin ver los archivos. Se descarga de la VRAM antes de medir los embeddings.">LLM para subpreguntas<select id="emb-llm"><option value="">Ninguno (solo las escritas a mano)</option></select></label>
+          <label>Idioma de las subpreguntas<select id="emb-llm-lang"><option value="en" selected>Inglés (recomendado: el código está en inglés)</option><option value="same">El de la pregunta</option></select></label>
+          <label>Subpreguntas por pregunta<input id="emb-llm-count" type="number" min="2" max="8" value="6"></label>
+          <label title="El LLM ve la pregunta y los archivos ya encontrados, y escribe qué buscar en la siguiente ronda. 0 = apagado. Requiere LLM.">Rondas de búsqueda iterativa<select id="emb-iter"><option value="0">Apagada</option><option value="1">1 ronda</option><option value="2">2 rondas</option><option value="3" selected>3 rondas</option><option value="4">4 rondas</option></select></label>
+          <label class="check"><input id="emb-unload" type="checkbox" checked> Descargar cada modelo de la VRAM al terminarlo</label>
+        </div>
+      </div>
+      <div class="row"><button type="button" id="emb-start" class="primary">Iniciar evaluación</button><button type="button" id="emb-cancel" hidden>Cancelar</button>
+        <button type="button" id="emb-preview">Previsualizar carpeta</button><span id="emb-summary" class="hint"></span></div>
+      <p id="emb-error" class="error" hidden></p>
+      <div id="emb-preview-out" class="hint"></div>
+    </div>
+    <div class="card" id="emb-progress" hidden>
+      <h2>Progreso <span class="sub" id="emb-pstate"></span></h2>
+      <div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="100"><div id="emb-pfill"></div></div>
+      <div id="emb-pinfo" class="hint"></div>
+    </div>
+    <div class="row emb-pick"><label>Ejecución<select id="emb-run"></select></label><label>Modelo<select id="emb-model"></select></label>
+      <a id="emb-export" class="link" href="#embeddings" hidden>Exportar JSON</a><span id="emb-meta" class="hint"></span></div>
+    <div id="emb-dash"></div>
+  </section>
+
   <!-- COMPARE -->
   <section data-view="compare" hidden>
     <div class="card">
@@ -180,5 +214,6 @@
 <script src="/bench.js"></script>
 <script src="/compare.js"></script>
 <script src="/history.js"></script>
+<script src="/embeddings.js"></script>
 </body>
 </html>

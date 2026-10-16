@@ -13,6 +13,8 @@ from . import __version__, inspector, inventory
 from .bench import bank, compare, sandbox
 from .bench.runner import BenchError, BenchManager
 from .bench.store import Store
+from .emb import bank as emb_bank, corpus as emb_corpus
+from .emb.runner import EmbError, EmbManager
 from .generate import CANCELLED, OK, generate
 from .gpu import GPUMonitor
 from .hardware import hardware_info
@@ -20,12 +22,13 @@ from .ollama import Ollama, OllamaError
 
 WEB_DIR = Path(__file__).resolve().parent / "web"
 _TYPES = {".html": "text/html; charset=utf-8", ".js": "text/javascript; charset=utf-8", ".css": "text/css; charset=utf-8"}
-WEB_FILES = ["app.js", "style.css", "nav.js", "dashboard.js", "models.js", "bench.js", "charts.js", "compare.js", "history.js"]
+WEB_FILES = ["app.js", "style.css", "nav.js", "dashboard.js", "models.js", "bench.js", "charts.js", "compare.js", "history.js",
+             "embeddings.js"]
 STATIC = {"/": ("index.html", _TYPES[".html"]), **{f"/{n}": (n, _TYPES[Path(n).suffix]) for n in WEB_FILES}}
 DEFAULTS = {"num_ctx": 4096, "temperature": 0.0, "seed": 42, "num_predict": 512}
 MAX_MESSAGES = 200
 MAX_CHARS = 2_000_000
-BENCH_ERROR_STATUS = {"busy": 409, "models_loaded": 409, "invalid_config": 400, "ollama_unavailable": 502}
+BENCH_ERROR_STATUS = {"busy": 409, "models_loaded": 409, "invalid_config": 400, "invalid_corpus": 400, "ollama_unavailable": 502}
 
 
 class BadRequest(Exception):
@@ -46,12 +49,16 @@ class App:
         self.hardware_fn = hardware_fn
         self.chat_lock = threading.Lock()  # una generacion (chat o benchmark) a la vez: nunca compiten por la GPU
         self.store = Store(runs_dir)
+        self.emb_store = Store(runs_dir, "embeddings")
         self.suite = suite or bank.default_suite()
         self.bench = BenchManager(ollama, gpu, self.store, self.chat_lock, self.suite, hardware_fn, self._inspect)
-        self.store.mark_interrupted(set())  # ejecuciones que quedaron 'running' de una sesion anterior
+        self.emb_suite = emb_bank.default_suite()
+        self.emb = EmbManager(ollama, gpu, self.emb_store, self.chat_lock, self.emb_suite, hardware_fn, self._inspect)
+        self.store.mark_interrupted(set())
+        self.emb_store.mark_interrupted(set())  # ejecuciones que quedaron 'running' de una sesion anterior
 
     def _inspect(self, names: list[str] | None = None) -> dict[str, dict]:
-        return {i["name"]: i for i in inventory.inspect_installed(self.ollama, self.store, self.hardware_fn(), names)}
+        return {i["name"]: i for i in inventory.inspect_installed(self.ollama, self.store, self.hardware_fn(), names, (self.emb_store,))}
 
     def allowed_hosts(self) -> set[str]:
         return {f"127.0.0.1:{self.port}", f"localhost:{self.port}", "127.0.0.1", "localhost"}
@@ -202,7 +209,7 @@ class Handler(BaseHTTPRequestHandler):
             self._json({"error": str(exc)}, 400)
         except bank.SuiteError as exc:
             self._json({"error": str(exc)}, 500)
-        except BenchError as exc:
+        except (BenchError, EmbError) as exc:
             self._json({"error": str(exc), "code": exc.code, **exc.extra}, BENCH_ERROR_STATUS.get(exc.code, 400))
         except OllamaError as exc:
             self._json({"error": str(exc)}, 502)
@@ -227,6 +234,7 @@ class Handler(BaseHTTPRequestHandler):
         simple = {
             "/api/version": self._version, "/api/system": self._system, "/api/status": lambda: self._json(self._status()),
             "/api/dashboard": self._dashboard, "/api/gpu/stream": self._gpu_stream, "/api/bench/status": lambda: self._json(self.app.bench.status()),
+            "/api/emb/status": lambda: self._json(self.app.emb.status()), "/api/emb/suite": lambda: self._json(self.app.emb_suite.info()),
             "/api/models": lambda: self._json({"models": self.app.ollama.models()}),
         }
         if path in simple:
@@ -246,6 +254,14 @@ class Handler(BaseHTTPRequestHandler):
             return self._json({"samples": [s.to_dict() for s in self.app.gpu.history(seconds)]})
         if path == "/api/gpu/processes":
             return self._json({"processes": self.app.gpu.processes()})
+        if path == "/api/emb/models":
+            models = inventory.inspect_installed(self.app.ollama, self.app.store, self.app.hardware_fn(), None, (self.app.emb_store,))
+            return self._json({"models": [m for m in models if "embedding" in (m.get("capabilities") or [])],
+                               "llms": [m for m in models if "completion" in (m.get("capabilities") or []) and "embedding" not in (m.get("capabilities") or [])]})
+        if path == "/api/emb/history":
+            return self._json({"runs": self.app.emb_store.list_runs()})
+        if path.startswith("/api/emb/history/"):
+            return self._emb_history(path[len("/api/emb/history/"):], q)
         if path == "/api/bench/suite":
             return self._suite(q)
         if path == "/api/history":
@@ -272,6 +288,18 @@ class Handler(BaseHTTPRequestHandler):
             return self._json({"run_id": self.app.bench.start(body)}, 202)
         if path == "/api/bench/cancel":
             return self._json({"cancelling": self.app.bench.cancel()})
+        if path == "/api/emb/start":
+            return self._json({"run_id": self.app.emb.start(body)}, 202)
+        if path == "/api/emb/cancel":
+            return self._json({"cancelling": self.app.emb.cancel()})
+        if path == "/api/emb/corpus-preview":
+            folder = body.get("folder") if isinstance(body, dict) else None
+            if not isinstance(folder, str) or not folder.strip():
+                raise BadRequest("Falta la carpeta.")
+            try:
+                return self._json(emb_corpus.build_corpus(folder, body.get("mode", "docs")).preview())
+            except emb_corpus.CorpusError as exc:
+                raise BadRequest(str(exc)) from exc
         raise NotFound()
 
     @staticmethod
@@ -305,6 +333,7 @@ class Handler(BaseHTTPRequestHandler):
             "defaults": DEFAULTS,
             "busy": self.app.chat_lock.locked(),
             "bench_running": bool(self.app.bench.active_run_ids()),
+            "emb_running": bool(self.app.emb.active_run_ids()),
         }
 
     def _dashboard(self) -> None:
@@ -368,6 +397,22 @@ class Handler(BaseHTTPRequestHandler):
             kind = "application/json; charset=utf-8" if fmt == "json" else "text/csv; charset=utf-8"
             return self._send(text.encode("utf-8"), kind, headers={
                 "Content-Disposition": f'attachment; filename="eli-run-{quote(run_id)}.{fmt}"'})
+        raise NotFound()
+
+    def _emb_history(self, rest: str, q: dict) -> None:
+        run_id, _, tail = rest.partition("/")
+        store = self.app.emb_store
+        if tail == "":
+            doc = store.load_run(run_id)
+            if doc is None:
+                raise NotFound("No existe esa ejecucion.")
+            return self._json(doc)
+        if tail == "export":
+            text = store.export_json(run_id)
+            if text is None:
+                raise NotFound("No existe esa ejecucion.")
+            return self._send(text.encode("utf-8"), "application/json; charset=utf-8", headers={
+                "Content-Disposition": f'attachment; filename="eli-emb-{quote(run_id)}.json"'})
         raise NotFound()
 
     def _compare(self, q: dict) -> None:

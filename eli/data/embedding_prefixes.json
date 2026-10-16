@@ -1,14 +1,91 @@
 {
-  "rules_version": "2026-10-15.1",
+  "rules_version": "2026-10-15.2",
   "description": "Prefijos de tarea que algunos modelos de embeddings esperan. Son convenciones documentadas por sus autores; ELI solo las aplica si lo pides y registra cuales uso. Un modelo sin regla se evalua sin prefijos.",
   "rules": [
-    {"id": "nomic", "name_contains": ["nomic-embed"], "architectures": ["nomic-bert"], "query": "search_query: ", "document": "search_document: ",
-     "source": "Convencion documentada por Nomic para nomic-embed-text."},
-    {"id": "e5", "name_contains": ["e5-", "multilingual-e5"], "architectures": [], "query": "query: ", "document": "passage: ",
-     "source": "Convencion documentada por los autores de la familia E5."},
-    {"id": "mxbai", "name_contains": ["mxbai-embed"], "architectures": [], "query": "Represent this sentence for searching relevant passages: ", "document": "",
-     "source": "Convencion documentada por Mixedbread para mxbai-embed-large (solo la consulta lleva prefijo)."},
-    {"id": "snowflake", "name_contains": ["snowflake-arctic-embed"], "architectures": [], "query": "Represent this sentence for searching relevant passages: ", "document": "",
-     "source": "Convencion documentada por Snowflake para snowflake-arctic-embed (solo la consulta lleva prefijo)."}
+    {
+      "id": "code-query-prefix",
+      "name_contains": [
+        "coderankembed",
+        "coderank",
+        "nomic-embed-code"
+      ],
+      "architectures": [],
+      "query": "Represent this query for searching relevant code: ",
+      "document": "",
+      "source": "Convencion documentada por Nomic para CodeRankEmbed y nomic-embed-code: solo la consulta lleva prefijo."
+    },
+    {
+      "id": "jina-code",
+      "name_contains": [
+        "jina-code-embeddings"
+      ],
+      "architectures": [],
+      "query": "Find the most relevant code snippet given the following query:\\n",
+      "document": "Candidate code snippet:\\n",
+      "source": "Tarea nl2code de la ficha de jina-code-embeddings (consulta y documento llevan prefijo)."
+    },
+    {
+      "id": "embeddinggemma",
+      "name_contains": [
+        "embeddinggemma"
+      ],
+      "architectures": [],
+      "query": "task: code retrieval | query: ",
+      "document": "title: none | text: ",
+      "source": "Plantillas de la ficha de EmbeddingGemma: tarea 'code retrieval' para la consulta, formato de documento con titulo."
+    },
+    {
+      "id": "nomic",
+      "name_contains": [
+        "nomic-embed"
+      ],
+      "architectures": [
+        "nomic-bert"
+      ],
+      "query": "search_query: ",
+      "document": "search_document: ",
+      "source": "Convencion documentada por Nomic para nomic-embed-text."
+    },
+    {
+      "id": "e5",
+      "name_contains": [
+        "e5-",
+        "multilingual-e5"
+      ],
+      "architectures": [],
+      "query": "query: ",
+      "document": "passage: ",
+      "source": "Convencion documentada por los autores de la familia E5."
+    },
+    {
+      "id": "mxbai",
+      "name_contains": [
+        "mxbai-embed"
+      ],
+      "architectures": [],
+      "query": "Represent this sentence for searching relevant passages: ",
+      "document": "",
+      "source": "Convencion documentada por Mixedbread para mxbai-embed-large (solo la consulta lleva prefijo)."
+    },
+    {
+      "id": "snowflake",
+      "name_contains": [
+        "snowflake-arctic-embed"
+      ],
+      "architectures": [],
+      "query": "Represent this sentence for searching relevant passages: ",
+      "document": "",
+      "source": "Convencion documentada por Snowflake para snowflake-arctic-embed (solo la consulta lleva prefijo)."
+    },
+    {
+      "id": "qwen3-embedding",
+      "name_contains": [
+        "qwen3-embedding"
+      ],
+      "architectures": [],
+      "query": "Instruct: Given a search query, retrieve relevant code snippets and passages that answer the query\nQuery:",
+      "document": "",
+      "source": "Formato 'Instruct: {tarea}' + salto de linea + 'Query:{consulta}' de la ficha de Qwen3-Embedding (solo la consulta); la tarea esta adaptada a codigo."
+    }
   ]
 }

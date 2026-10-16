@@ -1,7 +1,7 @@
 'use strict';
 /* Navegacion, helpers de DOM y dialogos compartidos por todas las secciones. Se carga despues de app.js. */
 
-const VIEWS = ['dashboard', 'models', 'benchmark', 'compare', 'history', 'chat'];
+const VIEWS = ['dashboard', 'models', 'benchmark', 'embeddings', 'compare', 'history', 'chat'];
 const viewHooks = {};
 let currentView = null;
 

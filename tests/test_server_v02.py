@@ -371,7 +371,8 @@ class UiCompatibilityTests(ServerBase):
         for code in self.JS.values():
             calls |= set(re.findall(r"""['"`](/api/[A-Za-z0-9/_-]*)""", code))
         self.assertGreater(len(calls), 12)
-        post_only = {"/api/chat", "/api/unload", "/api/models/delete", "/api/bench/start", "/api/bench/cancel"}
+        post_only = {"/api/chat", "/api/unload", "/api/models/delete", "/api/bench/start", "/api/bench/cancel",
+                     "/api/emb/start", "/api/emb/cancel", "/api/emb/corpus-preview"}
         for path in sorted(calls):
             target = path.rstrip("/") if path.endswith("/") and path != "/api/history/" else path
             if path == "/api/history/":

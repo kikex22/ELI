@@ -38,7 +38,15 @@ reales; no lanzar evaluaciones reales (una llamada minima a `/api/embed` para ve
 - `eli/emb/bank.py` + `eli/emb/suites/emb-core-1.0.0.json` (generado con un script; validado al cargar) + prefijos.
 - `eli/emb/corpus.py`: probado a mano sobre `~/Documents/CLU/docs` (17 fragmentos, 14 consultas); falta cubrirlo con tests.
 
-## Pendiente, en este orden
+## Hecho el 15-oct-2026 (segunda parte)
+- `eli/emb/runner.py` (`EmbManager`): warmup, retrieval, retrieval_user, similarity, stability, performance; VRAM/energia con GIA;
+  vectores de referencia para validar la conversion a TensorRT.
+- Servidor: `/api/emb/{suite,models,status,start,cancel,corpus-preview,history[/id[/export]]}`.
+- UI `eli/web/embeddings.js`: pestana Embeddings oscura tipo panel (tiles con umbrales provisionales + paneles). `tile()`/`panel()`
+  listos para migrar al resto. Probada solo con Ollama falso; falta la primera corrida real con `nomic-embed-text`.
+- Tests: `tests/test_emb_runner.py` (15) y fakes con `/api/embed`. 207 pasan (1 omitida).
+
+## Pendiente (lo anterior de esta lista ya esta hecho salvo compare)
 1. `eli/emb/runner.py` (`EmbManager`, como `BenchManager`): pasos warmup -> retrieval -> retrieval_user -> similarity -> stability ->
    performance; registros `model_start/warmup/step/model_end`; estado y contadores; GPU con `gpu_summary`.
 2. `eli/emb/compare.py`: por modelo, ultima ejecucion completa; condiciones iguales; rankings (recuperacion, entre idiomas,
@@ -66,6 +74,21 @@ ademas, por modelo (campo `trt_fit` en la ficha, informativo, sin ejecutar nada)
 - Tabla de compatibilidad en `eli/data/trtllm_rules.json` (ya existe para LLM): extender con familias de embeddings.
 Fase 2 (despues de tener la pestana): adaptador `eli/emb/backends/trt.py` con la misma interfaz `embed(texts)`; asi el runner y
 el comparador no cambian y se ve Ollama vs TRT en la misma tabla.
+
+## Embeddings para CODIGO (decidido 15-oct-2026: EMMA es sobre todo codigo)
+Limite detectado: `eli/emb/corpus.py` solo lee .md/.txt/.rst; el codigo de EMMA (C++/CMake/ROS/Python) no entra al corpus.
+1. **Corpus de codigo** (bloqueante): extensiones .py .cpp .cc .h .hpp .cu .cmake .msg .yaml .launch.py; fragmentos por funcion/clase
+   (Python con `ast`; C++ por llaves/comentarios; si no, ventanas de ~60 lineas). Consultas verificables por construccion:
+   docstring/comentario previo -> su funcion (quitandolo del fragmento) + `eli_queries.jsonl` manual (ya soportado).
+2. Reglas de prefijos de codigo en `eli/data/embedding_prefixes.json` (CodeRankEmbed y nomic-embed-code: "Represent this query for
+   searching relevant code: "; jina-code-embeddings y Qwen3-Embedding usan instrucciones propias; verificar en cada modelo).
+3. Separar manual / titulos / docstrings en las metricas y en la UI (hoy se mezclan en un solo numero).
+4. Candidatos (verificar disponibilidad en Ollama; si no, GGUF con llama.cpp):
+   - Encoders pequenos (ruta TensorRT via ONNX/trtexec): CodeRankEmbed (137M, 8k), jina-embeddings-v2-base-code (8k), CodeSage.
+   - Basados en LLM (ruta TRT-LLM): jina-code-embeddings 0.5B/1.5B (licencia CC-BY-NC), Qwen3-Embedding 0.6B, bge-code-v1.
+   - Techo de referencia: nomic-embed-code 7B / Qwen3-Embedding 4B-8B (con 16 GB solo cuantizados).
+   - Linea base ya medida: nomic-embed-text (R@1 53 % en las 15 preguntas manuales de EMMA).
+5. Orden: corpus de codigo -> baseline nomic en codigo -> CodeRankEmbed y jina v2 code -> Qwen3-Embedding 0.6B -> compare.py.
 
 ## Trampas ya conocidas
 - En este shell `cd` esta redirigido: usar `builtin cd /home/adjor/Documents/ELI`.

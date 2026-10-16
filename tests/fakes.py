@@ -4,7 +4,9 @@ Nada de lo que producen estos falsos debe presentarse como una medicion real de 
 """
 from __future__ import annotations
 
+import hashlib
 import json
+import re
 import threading
 import time
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
@@ -40,6 +42,14 @@ DEFAULT_MODEL = {
     "architecture": "qwen2", "context_length": 131072, "embedding_length": 2560, "parameter_count": 8_000_000_000,
     "capabilities": ["completion", "thinking"],
 }
+
+
+def word_hash_embedding(text: str, dims: int = 64) -> list[float]:
+    """Embedding falso determinista: bolsa de palabras con hash. Textos con palabras comunes quedan cerca."""
+    vec = [0.0] * dims
+    for w in re.findall(r"\w+", text.lower()):
+        vec[int(hashlib.md5(w.encode()).hexdigest(), 16) % dims] += 1.0
+    return vec
 
 
 class FakeOllamaHandler(BaseHTTPRequestHandler):
@@ -106,6 +116,22 @@ class FakeOllamaHandler(BaseHTTPRequestHandler):
             self._send({"details": {"format": m["format"], "family": m["family"], "families": m["families"],
                                     "parameter_size": m["parameter_size"], "quantization_level": m["quantization_level"]},
                         "model_info": info, "capabilities": m["capabilities"], "modified_at": m["modified_at"], "parameters": ""})
+        elif self.path == "/api/embed":
+            owner.embed_bodies.append(body)
+            if body["model"] not in owner.models:
+                return self._send({"error": f"model '{body['model']}' not found"}, 404)
+            if owner.embed_error:
+                return self._send({"error": owner.embed_error}, 500)
+            texts = body["input"]
+            if body.get("truncate") is not False:
+                return self._send({"error": "el fake exige truncate=false"}, 400)
+            if any(len(t.split()) > owner.embed_max_words for t in texts):
+                return self._send({"error": "the input length exceeds the context length"}, 400)
+            owner.loaded.add(body["model"])
+            embed = owner.embedder or (lambda model, text: word_hash_embedding(text))
+            self._send({"model": body["model"], "embeddings": [embed(body["model"], t) for t in texts],
+                        "total_duration": 1_000_000, "load_duration": owner.load_duration,
+                        "prompt_eval_count": sum(len(t.split()) for t in texts)})
         elif self.path == "/api/generate":
             owner.unloaded.append(body["model"])
             if owner.unload_delay:  # Ollama real descarga de forma asincrona
@@ -163,6 +189,10 @@ class FakeOllama:
         self.unloaded: list[str] = []
         self.deleted: list[str] = []
         self.chat_bodies: list[dict] = []
+        self.embed_bodies: list[dict] = []
+        self.embedder = None  # callable(model, texto) -> vector
+        self.embed_error = None
+        self.embed_max_words = 10_000
         self.client_disconnected = threading.Event()
         self.server = ThreadingHTTPServer(("127.0.0.1", 0), FakeOllamaHandler)
         self.server.owner = self
